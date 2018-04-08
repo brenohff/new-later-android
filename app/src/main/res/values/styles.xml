@@ -1,0 +1,23 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <!--<style name="Switch">-->
+        <!--<item name="sw_trackSize">14dp</item>-->
+        <!--<item name="sw_trackCap">round</item>-->
+        <!--<item name="sw_thumbRadius">10dp</item>-->
+        <!--<item name="sw_thumbElevation">2dp</item>-->
+        <!--<item name="sw_trackColor">@color/white</item>-->
+        <!--<item name="sw_thumbColor">@color/floatingButtonColor</item>-->
+        <!--<item name="sw_animDuration">200</item>-->
+        <!--<item name="sw_interpolator">@android:anim/decelerate_interpolator</item>-->
+    <!--</style>-->
+
+</resources>
