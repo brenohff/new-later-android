@@ -1,12 +1,10 @@
 package later.brenohff.com.later.Activities;
 
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
-import android.view.MenuItem;
 import android.view.Window;
 import android.view.WindowManager;
 
@@ -22,13 +20,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         bottomMenu = (BottomNavigationView) findViewById(R.id.bottom_nav_view);
-
-        bottomMenu.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                return false;
-            }
-        });
 
         changeStatusBarColor(R.color.background);
     }
@@ -68,31 +59,6 @@ public class MainActivity extends AppCompatActivity {
                         R.animator.fragment_slide_right_exit)
                 .replace(R.id.main_container, fragment, tag)
                 .commit();
-
-//        val last_id: Int = bottom_nav_view.selectedItemId
-//        if (new_id > last_id) {
-//            supportFragmentManager.beginTransaction()
-//                    .setCustomAnimations(R.animator.fragment_slide_left_enter,
-//                            R.animator.fragment_slide_left_exit,
-//                            R.animator.fragment_slide_right_enter,
-//                            R.animator.fragment_slide_right_exit)
-//                    .replace(R.id.main_container, fragment, tag)
-//                    .commit()
-//        } else if (new_id < last_id) {
-//            supportFragmentManager.beginTransaction()
-//                    .setCustomAnimations(R.animator.fragment_slide_right_enter,
-//                            R.animator.fragment_slide_right_exit,
-//                            R.animator.fragment_slide_left_enter,
-//                            R.animator.fragment_slide_left_exit)
-//                    .replace(R.id.main_container, fragment, tag)
-//                    .commit()
-//        } else {
-//            supportFragmentManager.beginTransaction()
-//                    .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
-//                    .replace(R.id.main_container, fragment, tag)
-//                    .addToBackStack(tag)
-//                    .commit()
-//        }
     }
 
     private void popFragment(Integer qtd) {
