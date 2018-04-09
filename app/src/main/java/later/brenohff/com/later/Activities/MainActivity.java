@@ -18,14 +18,23 @@ import android.widget.Toast;
 
 import com.facebook.AccessToken;
 import com.facebook.FacebookSdk;
+import com.facebook.Profile;
 import com.facebook.appevents.AppEventsLogger;
+import com.facebook.login.LoginManager;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
+import later.brenohff.com.later.Connections.LTConnection;
+import later.brenohff.com.later.Connections.LTRequests;
 import later.brenohff.com.later.Fragments.LoginFragment;
 import later.brenohff.com.later.Fragments.ProfileFragment;
+import later.brenohff.com.later.Memory.LTMainData;
+import later.brenohff.com.later.Models.LTUser;
 import later.brenohff.com.later.R;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -35,6 +44,10 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        if (AccessToken.getCurrentAccessToken() != null) {
+            getUser(Profile.getCurrentProfile().getId());
+        }
 
         initFB();
         showFBInfo();
@@ -46,8 +59,8 @@ public class MainActivity extends AppCompatActivity {
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.nav_conta:
-                        if (isUserLogged()) {
-                            changeFragment(new ProfileFragment(), "ProfileFragment");
+                        if (AccessToken.getCurrentAccessToken() != null) {
+                            getUser(Profile.getCurrentProfile().getId());
                         } else {
                             changeFragment(new LoginFragment(), "LoginFragment");
                         }
@@ -144,13 +157,6 @@ public class MainActivity extends AppCompatActivity {
         Toast.makeText(this, value, Toast.LENGTH_SHORT).show();
     }
 
-    public boolean isUserLogged() {
-        if (AccessToken.getCurrentAccessToken() != null) {
-            return true;
-        }
-        return false;
-    }
-
     private void initFB() {
         FacebookSdk.sdkInitialize(getApplicationContext());
         AppEventsLogger.activateApp(this);
@@ -170,4 +176,33 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
     }
+
+    private void getUser(String id) {
+
+        if (LTMainData.getInstance().getUser() != null) {
+            changeFragment(new ProfileFragment(), "ProfileFragment");
+        } else {
+            LTRequests request = LTConnection.createService(LTRequests.class);
+            Call<LTUser> call = request.getUserByFaceID(id);
+            call.enqueue(new Callback<LTUser>() {
+                @Override
+                public void onResponse(Call<LTUser> call, Response<LTUser> response) {
+                    if (response.isSuccessful()) {
+                        LTMainData.getInstance().setUser(response.body());
+                        changeFragment(new ProfileFragment(), "ProfileFragment");
+                    } else {
+                        showToast("Não foi possível carregar usuário, faça login novamente.");
+                        LoginManager.getInstance().logOut();
+                        changeFragment(new LoginFragment(), "LoginFragment");
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<LTUser> call, Throwable t) {
+                    showToast("Erro ao obter usuário");
+                }
+            });
+        }
+    }
+
 }

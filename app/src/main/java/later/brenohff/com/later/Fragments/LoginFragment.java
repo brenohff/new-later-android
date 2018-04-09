@@ -26,8 +26,14 @@ import org.json.JSONObject;
 import java.util.Arrays;
 
 import later.brenohff.com.later.Activities.MainActivity;
+import later.brenohff.com.later.Connections.LTConnection;
+import later.brenohff.com.later.Connections.LTRequests;
+import later.brenohff.com.later.Memory.LTMainData;
 import later.brenohff.com.later.Models.LTUser;
 import later.brenohff.com.later.R;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -99,7 +105,7 @@ public class LoginFragment extends Fragment {
                     user.setImage("https://graph.facebook.com/" + user.getFace_id() + "/picture");
                     user.setImage_long("https://graph.facebook.com/" + user.getFace_id() + "/picture?type=large");
 
-                    ((MainActivity) context).pushFragmentWithNoStack(new ProfileFragment(), "ProfileFragment");
+                    saveUser(user);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -110,6 +116,31 @@ public class LoginFragment extends Fragment {
         parameters.putString("fields", "id,name,link,email,gender,birthday");
         request.setParameters(parameters);
         request.executeAsync();
+    }
+
+    private void saveUser(final LTUser user) {
+        LTRequests requests = LTConnection.createService(LTRequests.class);
+        Call<Void> call = requests.registrarUsuario(user);
+        call.enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if (response.isSuccessful()) {
+                    LTMainData.getInstance().setUser(user);
+                    ((MainActivity) context).pushFragmentWithNoStack(new ProfileFragment(), "ProfileFragment");
+                } else if (response.code() == 409) {
+                    LTMainData.getInstance().setUser(user);
+                    ((MainActivity) context).pushFragmentWithNoStack(new ProfileFragment(), "ProfileFragment");
+                } else {
+                    LoginManager.getInstance().logOut();
+                    ((MainActivity) context).showToast("Não foi possível realizar login.");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                ((MainActivity) context).showToast("Erro ao realizar login.");
+            }
+        });
     }
 
 }

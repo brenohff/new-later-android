@@ -1,5 +1,12 @@
 package later.brenohff.com.later.Connections;
 
+import later.brenohff.com.later.Models.LTUser;
+import retrofit2.Call;
+import retrofit2.http.Body;
+import retrofit2.http.GET;
+import retrofit2.http.POST;
+import retrofit2.http.Query;
+
 /**
  * Created by breno on 07/08/2017.
  */
@@ -13,6 +20,11 @@ public interface LTRequests {
     ////////////////////////////////////////////////////////////////////////////////////////////////////
     ///// USERS
     ////////////////////////////////////////////////////////////////////////////////////////////////////
+    @POST("users/saveUser")
+    Call<Void> registrarUsuario(@Body LTUser user);
+
+    @GET("users/getUser")
+    Call<LTUser> getUserByFaceID(@Query("face_id") String face_id);
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////
     ///// CATEGORIES
