@@ -1,0 +1,310 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tagview="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/fragment_event_register_background"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="fitXY" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+                android:layout_centerInParent="true"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="30dp"
+                    android:layout_marginRight="30dp"
+                    android:layout_marginTop="-50dp"
+                    android:src="@drawable/logo" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="30dp"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="20dp"
+                    android:layout_marginTop="-50dp"
+                    android:background="@drawable/test"
+                    android:orientation="vertical"
+                    android:paddingLeft="20dp"
+                    android:paddingRight="20dp">
+
+                    <com.rengwuxian.materialedittext.MaterialEditText
+                        android:id="@+id/fragment_event_register_titulo"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:background="@drawable/test"
+                        android:hint="Título"
+                        android:imeOptions="actionNext"
+                        android:inputType="textCapSentences"
+
+                        android:singleLine="true"
+
+                        app:met_floatingLabel="highlight"
+                        app:met_floatingLabelAlwaysShown="true"
+                        app:met_floatingLabelText="Título"
+                        app:met_primaryColor="@color/floatingButtonColor"
+
+                        app:met_textColor="@color/white"
+                        app:met_textColorHint="@color/white" />
+
+
+                    <com.rengwuxian.materialedittext.MaterialEditText
+                        android:id="@+id/fragment_event_register_descricao"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Descrição"
+
+                        app:met_floatingLabel="highlight"
+                        app:met_floatingLabelText="Descrição"
+                        app:met_primaryColor="@color/floatingButtonColor"
+
+                        app:met_textColor="@color/white"
+                        app:met_textColorHint="@color/white" />
+
+                    <!--
+
+                    <com.rengwuxian.materialedittext.MaterialEditText
+                        android:id="@+id/fragment_event_register_local"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+
+                        android:hint="Local"
+                        android:imeOptions="actionNext"
+                        android:inputType="textCapCharacters"
+                        android:maxLines="1"
+
+                        app:met_floatingLabel="highlight"
+                        app:met_floatingLabelText="Local"
+                        app:met_primaryColor="@color/floatingButtonColor"
+
+                        app:met_textColor="@color/white"
+                        app:met_textColorHint="@color/white" />
+
+                    -->
+
+                    <com.rengwuxian.materialedittext.MaterialEditText
+                        android:id="@+id/fragment_event_register_valor"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Valor"
+
+                        android:imeOptions="actionDone"
+                        android:inputType="number"
+
+                        android:singleLine="true"
+                        app:met_floatingLabel="highlight"
+                        app:met_floatingLabelText="Valor"
+                        app:met_primaryColor="@color/floatingButtonColor"
+
+                        app:met_textColor="@color/white"
+                        app:met_textColorHint="@color/white" />
+
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="10dp"
+                        android:layout_marginTop="10dp"
+                        android:minHeight="35dp">
+
+                        <ImageButton
+                            android:id="@+id/fragment_event_register_localizacao"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:layout_alignParentEnd="true"
+                            android:layout_centerInParent="true"
+                            android:layout_marginLeft="5dp"
+                            android:layout_marginRight="5dp"
+                            android:background="@drawable/marker" />
+
+                        <!--
+                        <Button
+                            android:id="@+id/fragment_event_register_calendario"
+                            android:layout_width="50dp"
+                            android:layout_height="30dp"
+                            android:layout_alignParentRight="true"
+                            android:layout_marginLeft="5dp"
+                            android:layout_marginRight="5dp"
+                            android:layout_weight="2"
+                            android:background="@drawable/login_entrar"
+                            android:text="DATA"
+                            android:textColor="@color/white" />
+                        -->
+
+                        <TextView
+                            android:id="@+id/fragment_event_register_local"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_toLeftOf="@id/fragment_event_register_localizacao"
+                            android:clickable="true"
+                            android:gravity="center_vertical"
+                            android:minHeight="35dp"
+                            android:text="Local"
+                            android:textAllCaps="false"
+                            android:textColor="@color/white"
+                            android:textSize="17dp" />
+
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="35dp"
+                        android:layout_marginBottom="10dp"
+                        android:layout_marginTop="10dp">
+
+                        <ImageButton
+                            android:id="@+id/fragment_event_register_calendario"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:layout_alignParentEnd="true"
+                            android:layout_centerInParent="true"
+                            android:layout_marginLeft="5dp"
+                            android:layout_marginRight="5dp"
+                            android:background="@drawable/calendar" />
+
+                        <TextView
+                            android:id="@+id/fragment_event_register_data"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_toLeftOf="@id/fragment_event_register_calendario"
+                            android:clickable="true"
+                            android:gravity="center_vertical"
+                            android:text="Data"
+                            android:textAllCaps="false"
+                            android:textColor="@color/white"
+                            android:textSize="17dp" />
+
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="35dp"
+                        android:layout_marginBottom="10dp"
+                        android:layout_marginTop="10dp">
+
+                        <ImageButton
+                            android:id="@+id/fragment_event_register_horario"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:layout_alignParentEnd="true"
+                            android:layout_centerInParent="true"
+                            android:layout_marginLeft="5dp"
+                            android:layout_marginRight="5dp"
+                            android:background="@drawable/clock" />
+
+                        <TextView
+                            android:id="@+id/fragment_event_register_hora"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_toLeftOf="@id/fragment_event_register_horario"
+                            android:layout_weight="1"
+                            android:clickable="true"
+                            android:gravity="center_vertical"
+                            android:text="Horário"
+                            android:textAllCaps="false"
+                            android:textColor="@color/white"
+                            android:textSize="17dp" />
+
+                    </RelativeLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="5dp"
+                        android:layout_marginTop="5dp"
+                        android:gravity="center_horizontal"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="30dp"
+                            android:layout_marginRight="5dp"
+                            android:gravity="center_vertical"
+                            android:text="Público"
+                            android:textColor="@color/white"
+                            android:textSize="16sp" />
+
+                        <com.rey.material.widget.Switch
+                            android:id="@+id/fragment_event_register_switch"
+                            style="@style/Switch"
+                            android:layout_width="wrap_content"
+                            android:layout_height="30dp"
+                            android:checked="false"
+                            android:gravity="center" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="30dp"
+                            android:layout_marginLeft="5dp"
+                            android:gravity="center_vertical"
+                            android:text="Privado"
+                            android:textColor="@color/white"
+                            android:textSize="16sp" />
+
+                    </LinearLayout>
+
+                    <com.cunoraz.tagview.TagView
+                        android:id="@+id/tag_group"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginBottom="10dp"
+                        android:layout_marginTop="10dp"
+                        android:gravity="center"
+                        tagview:lineMargin="10dp"
+                        tagview:tagMargin="10dp" />
+
+                    <Button
+                        android:id="@+id/fragment_event_register_uploadImage"
+                        android:layout_width="match_parent"
+                        android:layout_height="30dp"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginBottom="30dp"
+                        android:layout_marginLeft="30dp"
+                        android:layout_marginRight="30dp"
+                        android:layout_marginTop="15dp"
+                        android:background="@drawable/login_entrar"
+                        android:text="Carregar imagem"
+                        android:textColor="#FFF" />
+
+                </LinearLayout>
+
+                <Button
+                    android:id="@+id/fragment_event_register_register"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginBottom="30dp"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="20dp"
+                    android:background="@drawable/login_entrar"
+                    android:text="Registrar Evento"
+                    android:textColor="#FFF" />
+
+            </LinearLayout>
+
+        </RelativeLayout>
+
+    </ScrollView>
+
+</FrameLayout>

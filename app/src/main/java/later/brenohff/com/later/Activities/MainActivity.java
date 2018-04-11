@@ -4,6 +4,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.Signature;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
@@ -27,6 +28,7 @@ import java.security.NoSuchAlgorithmException;
 
 import later.brenohff.com.later.Connections.LTConnection;
 import later.brenohff.com.later.Connections.LTRequests;
+import later.brenohff.com.later.Fragments.EventsFragment;
 import later.brenohff.com.later.Fragments.LoginFragment;
 import later.brenohff.com.later.Fragments.ProfileFragment;
 import later.brenohff.com.later.Memory.LTMainData;
@@ -39,6 +41,30 @@ import retrofit2.Response;
 public class MainActivity extends AppCompatActivity {
 
     private BottomNavigationView bottomMenu;
+
+    boolean doubleBackToExitPressedOnce = false;
+
+    @Override
+    public void onBackPressed() {
+        if (getSupportFragmentManager().getBackStackEntryCount() == 0) {
+            if (doubleBackToExitPressedOnce) {
+                super.onBackPressed();
+                return;
+            }
+
+            this.doubleBackToExitPressedOnce = true;
+            Toast.makeText(this, "Precione novamente para sair...", Toast.LENGTH_SHORT).show();
+
+            new Handler().postDelayed(new Runnable() {
+
+                @Override
+                public void run() {
+                    doubleBackToExitPressedOnce = false;
+                }
+            }, 2000);
+        } else
+            popFragment(1);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,7 +95,7 @@ public class MainActivity extends AppCompatActivity {
                         showToast("Categorias");
                         break;
                     case R.id.nav_eventos:
-                        showToast("Eventos");
+                        changeFragment(new EventsFragment(), "EventsFragment");
                         break;
                     case R.id.nav_mapa:
                         showToast("Mapa");
@@ -85,7 +111,7 @@ public class MainActivity extends AppCompatActivity {
 
     //region FRAGMENT
 
-    private void setFragment(Integer position) {
+    public void setFragment(Integer position) {
         switch (position) {
             case 1:
                 bottomMenu.setSelectedItemId(R.id.nav_conta);
@@ -93,6 +119,7 @@ public class MainActivity extends AppCompatActivity {
             case 2:
                 break;
             case 3:
+                bottomMenu.setSelectedItemId(R.id.nav_eventos);
                 break;
             case 4:
                 break;
@@ -100,7 +127,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void pushFragmentWithStack(String tag, Fragment fragment) {
+    public void pushFragmentWithStack(Fragment fragment, String tag) {
         this.getSupportFragmentManager().beginTransaction()
                 .setCustomAnimations(R.animator.fragment_slide_left_enter,
                         R.animator.fragment_slide_left_exit,
@@ -199,10 +226,14 @@ public class MainActivity extends AppCompatActivity {
 
                 @Override
                 public void onFailure(Call<LTUser> call, Throwable t) {
-                    showToast("Erro ao obter usuário");
+                    showToast("Erro ao conectar com servidor.");
                 }
             });
         }
     }
+
+    //region PERMISSIONS
+
+    //endregion
 
 }

@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
@@ -19,6 +20,7 @@ import com.facebook.GraphResponse;
 import com.facebook.LoggingBehavior;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
+import com.squareup.picasso.Picasso;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -45,6 +47,7 @@ public class LoginFragment extends Fragment {
     private LTUser user;
 
     private Button login_facebook;
+    private ImageView login_background;
     private CallbackManager callbackManager = CallbackManager.Factory.create();
 
     @Override
@@ -53,6 +56,10 @@ public class LoginFragment extends Fragment {
         context = view.getContext();
 
         login_facebook = (Button) view.findViewById(R.id.login_btFacebook);
+        login_background = (ImageView) view.findViewById(R.id.login_background);
+
+        Picasso.get().load(R.drawable.background).resize(500, 500).into(login_background);
+
         login_facebook.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -126,9 +133,11 @@ public class LoginFragment extends Fragment {
             public void onResponse(Call<Void> call, Response<Void> response) {
                 if (response.isSuccessful()) {
                     LTMainData.getInstance().setUser(user);
+                    ((MainActivity) context).showToast("Bem vindo, " + user.getName());
                     ((MainActivity) context).pushFragmentWithNoStack(new ProfileFragment(), "ProfileFragment");
                 } else if (response.code() == 409) {
                     LTMainData.getInstance().setUser(user);
+                    ((MainActivity) context).showToast("Olá novamente, " + user.getName());
                     ((MainActivity) context).pushFragmentWithNoStack(new ProfileFragment(), "ProfileFragment");
                 } else {
                     LoginManager.getInstance().logOut();
