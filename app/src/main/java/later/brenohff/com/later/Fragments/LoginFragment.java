@@ -20,7 +20,6 @@ import com.facebook.GraphResponse;
 import com.facebook.LoggingBehavior;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
-import com.squareup.picasso.Picasso;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -58,7 +57,8 @@ public class LoginFragment extends Fragment {
         login_facebook = (Button) view.findViewById(R.id.login_btFacebook);
         login_background = (ImageView) view.findViewById(R.id.login_background);
 
-        Picasso.get().load(R.drawable.background).resize(500, 500).into(login_background);
+        //TODO DESCOMENTAR ESSA LINHA.
+//        Picasso.get().load(R.drawable.background).resize(500, 500).into(login_background);
 
         login_facebook.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -105,12 +105,12 @@ public class LoginFragment extends Fragment {
                 try {
                     user.setBirthday(object.getString("birthday"));
                     user.setEmail(object.getString("email"));
-                    user.setFace_id(object.getString("id"));
+                    user.setId(object.getString("id"));
                     user.setName(object.getString("name"));
                     user.setGender(object.getString("gender"));
                     user.setLink(object.getString("link"));
-                    user.setImage("https://graph.facebook.com/" + user.getFace_id() + "/picture");
-                    user.setImage_long("https://graph.facebook.com/" + user.getFace_id() + "/picture?type=large");
+                    user.setImage("https://graph.facebook.com/" + user.getId() + "/picture");
+                    user.setImage_long("https://graph.facebook.com/" + user.getId() + "/picture?type=large");
 
                     saveUser(user);
                 } catch (JSONException e) {

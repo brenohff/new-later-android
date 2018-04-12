@@ -4,8 +4,7 @@ import java.io.Serializable;
 
 public class LTUser implements Serializable {
 
-    private Long id;
-    private String face_id;
+    private String id;
     private String image;
     private String image_long;
     private String name;
@@ -17,12 +16,12 @@ public class LTUser implements Serializable {
     public LTUser() {
     }
 
-    public String getFace_id() {
-        return face_id;
+    public String getId() {
+        return id;
     }
 
-    public void setFace_id(String face_id) {
-        this.face_id = face_id;
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getImage() {

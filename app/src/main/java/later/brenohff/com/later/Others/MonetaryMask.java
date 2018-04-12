@@ -49,7 +49,7 @@ public class MonetaryMask implements TextWatcher {
         return valorSemMascara(this.mEditText.getText().toString());
     }
 
-    private Double valorSemMascara(String valor) {
+    public Double valorSemMascara(String valor) {
         BigDecimal parsed = null;
         try {
             String cleanString = valor.replaceAll("[R,$,.]", "");

@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "113026367597",
+    "firebase_url": "https://later-android.firebaseio.com",
+    "project_id": "later-android",
+    "storage_bucket": "later-android.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:113026367597:android:cb3794d47891366f",
+        "android_client_info": {
+          "package_name": "later.brenohff.com.later"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "113026367597-gph3amd62j0kusru69tk78fo888omu8m.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDMaE_xEWGsogT9OeOfDh5MYTvLI62Efng"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,5 +1,8 @@
 package later.brenohff.com.later.Connections;
 
+import java.util.List;
+
+import later.brenohff.com.later.Models.LTEvent;
 import later.brenohff.com.later.Models.LTUser;
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -16,6 +19,11 @@ public interface LTRequests {
     ////////////////////////////////////////////////////////////////////////////////////////////////////
     ///// EVENTS
     ////////////////////////////////////////////////////////////////////////////////////////////////////
+    @POST("events/saveEvent")
+    Call<Void> registerEvent(@Body LTEvent event);
+
+    @GET("events/getEventsByUser")
+    Call<List<LTEvent>> getEventsByUser(@Query("user_id") String user_id);
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////
     ///// USERS
@@ -24,7 +32,7 @@ public interface LTRequests {
     Call<Void> registrarUsuario(@Body LTUser user);
 
     @GET("users/getUser")
-    Call<LTUser> getUserByFaceID(@Query("face_id") String face_id);
+    Call<LTUser> getUserByFaceID(@Query("id") String id);
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////
     ///// CATEGORIES

@@ -2,6 +2,7 @@ package later.brenohff.com.later.Fragments;
 
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -10,9 +11,12 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.cunoraz.tagview.Tag;
 import com.cunoraz.tagview.TagView;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.ui.PlacePicker;
 import com.rengwuxian.materialedittext.MaterialEditText;
 import com.rey.material.widget.Switch;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
@@ -23,9 +27,17 @@ import java.util.List;
 import java.util.Locale;
 
 import later.brenohff.com.later.Activities.MainActivity;
+import later.brenohff.com.later.Connections.LTConnection;
+import later.brenohff.com.later.Connections.LTRequests;
+import later.brenohff.com.later.Memory.LTMainData;
 import later.brenohff.com.later.Models.LTEvent;
 import later.brenohff.com.later.Others.MonetaryMask;
 import later.brenohff.com.later.R;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
+import static android.app.Activity.RESULT_OK;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -44,10 +56,11 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
     private List<Tag> tagList;
     private List<String> categoriesList;
     private Switch modo;
+    private MaterialEditText titulo_et, descricao_et, valor_et;
     private boolean isPrivate = false;
 
-    private MaterialEditText titulo_et, descricao_et, valor_et;
-
+    private Double lat, lon;
+    private int PLACE_PICKER_REQUEST = 1;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -97,9 +110,11 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
                 break;
 
             case R.id.fragment_event_register_local:
+                startPlacePickerActivity();
                 break;
 
             case R.id.fragment_event_register_localizacao:
+                startPlacePickerActivity();
                 break;
 
             case R.id.fragment_event_register_data:
@@ -118,13 +133,122 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
                 timePicker();
                 break;
 
-            case R.id.fragment_event_register_register:
+            case R.id.fragment_event_register_uploadImage:
                 break;
 
-            case R.id.fragment_event_register_uploadImage:
+            case R.id.fragment_event_register_register:
+                if (validateFields()) {
+                    saveEvent();
+                }
                 break;
         }
     }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == PLACE_PICKER_REQUEST && resultCode == RESULT_OK) {
+            displaySelectedPlaceFromPlacePicker(data);
+        }
+    }
+
+    private boolean validateFields() {
+        boolean b = true;
+
+        if (titulo_et.getText().toString().isEmpty()) {
+            b = false;
+            titulo_et.setError("Insira um título");
+        }
+
+        if (descricao_et.getText().toString().isEmpty()) {
+            b = false;
+            descricao_et.setError("Insira uma descrição");
+        }
+
+        if (local_texto.getText().toString().equals("Local")) {
+            b = false;
+            local_texto.setError("Insira uma local");
+        }
+
+        if (valor_et.getText().toString().isEmpty()) {
+            b = false;
+            valor_et.setError("Insira uma valor!");
+        }
+
+        if (data_texto.getText().toString().equals("Data")) {
+            b = false;
+            data_texto.setError("Escolha uma data!");
+        }
+
+        if (hora_texto.getText().toString().equals("Horário")) {
+            b = false;
+            hora_texto.setError("Escolha um horário!");
+        }
+
+//        if (categoriesList.isEmpty()) {
+//            b = false;
+//            Toast.makeText(context, "Escolha pelo menos 1 categoria", Toast.LENGTH_SHORT).show();
+//        }
+
+        return b;
+    }
+
+    private void saveEvent() {
+        ltEvent = new LTEvent();
+        ltEvent.setStatus("avaliacao");
+        ltEvent.setPrivate(isPrivate);
+        ltEvent.setLat(lat);
+        ltEvent.setLon(lon);
+        ltEvent.setTitle(titulo_et.getText().toString());
+        ltEvent.setDescription(descricao_et.getText().toString());
+        ltEvent.setLocale(local_texto.getText().toString());
+        ltEvent.setPrice(monetaryMask.valorSemMascara(valor_et.getText().toString()));
+        ltEvent.setDate(data_texto.getText().toString());
+        ltEvent.setHour(hora_texto.getText().toString());
+        ltEvent.setUser(LTMainData.getInstance().getUser());
+
+        final LTRequests requests = LTConnection.createService(LTRequests.class);
+        Call<Void> call = requests.registerEvent(ltEvent);
+        call.enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if (response.isSuccessful()) {
+                    Toast.makeText(context, "Evento inserido com sucesso.", Toast.LENGTH_SHORT).show();
+                }else{
+                    Toast.makeText(context, "Não foi possível inserir evento - " + response.code(), Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                Toast.makeText(context, "Erro ao conectar com o servidor.", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    //region PLACE PICKER
+    private void startPlacePickerActivity() {
+        PlacePicker.IntentBuilder intentBuilder = new PlacePicker.IntentBuilder();
+
+        try {
+            Intent intent = intentBuilder.build(getActivity());
+            startActivityForResult(intent, PLACE_PICKER_REQUEST);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void displaySelectedPlaceFromPlacePicker(Intent data) {
+        Place placeSelected = PlacePicker.getPlace(data, context);
+
+        lat = placeSelected.getLatLng().latitude;
+        lon = placeSelected.getLatLng().longitude;
+
+        local_texto.setText(placeSelected.getAddress());
+    }
+    //endregion
+
+    //region DATE AND TIME PICKER
 
     private void datePicker() {
         Calendar now = Calendar.getInstance();
@@ -169,4 +293,8 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
         tpd.show(((MainActivity) getContext()).getFragmentManager(), "");
 
     }
+
+    //endregion
+
+
 }
