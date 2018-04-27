@@ -100,8 +100,8 @@
                         android:layout_marginLeft="5dp"
                         android:fontFamily="@font/philosopher_regular"
                         android:gravity="center_vertical"
-                        android:textColor="#FFF"
                         android:text="20/02 às 22:00"
+                        android:textColor="#FFF"
                         android:textSize="14sp" />
 
                 </LinearLayout>

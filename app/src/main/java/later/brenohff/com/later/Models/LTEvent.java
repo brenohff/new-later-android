@@ -13,6 +13,7 @@ public class LTEvent implements Serializable {
     private String date;
     private String hour;
     private String locale;
+    private String image;
 
     private Double price;
     private Double lat;
@@ -21,6 +22,15 @@ public class LTEvent implements Serializable {
     private boolean isPrivate;
 
     // region ---------------- GETTERS AND SETTERS ----------------
+
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
 
     public Long getId() {
         return id;

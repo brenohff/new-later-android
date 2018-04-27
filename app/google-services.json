@@ -1,27 +1,35 @@
 {
   "project_info": {
-    "project_number": "113026367597",
-    "firebase_url": "https://later-android.firebaseio.com",
-    "project_id": "later-android",
-    "storage_bucket": "later-android.appspot.com"
+    "project_number": "596145802146",
+    "firebase_url": "https://novo-later-android.firebaseio.com",
+    "project_id": "novo-later-android",
+    "storage_bucket": "novo-later-android.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:113026367597:android:cb3794d47891366f",
+        "mobilesdk_app_id": "1:596145802146:android:cb3794d47891366f",
         "android_client_info": {
           "package_name": "later.brenohff.com.later"
         }
       },
       "oauth_client": [
         {
-          "client_id": "113026367597-gph3amd62j0kusru69tk78fo888omu8m.apps.googleusercontent.com",
+          "client_id": "596145802146-r809qn13s3bd8oqc4mrle91kjol525ej.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "later.brenohff.com.later",
+            "certificate_hash": "a8fa239178617ccd2f1ea1e3b5cb1da1aee65adb"
+          }
+        },
+        {
+          "client_id": "596145802146-pqk52fo4m0tufsgtm49gh3jfu0mfprkc.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyDMaE_xEWGsogT9OeOfDh5MYTvLI62Efng"
+          "current_key": "AIzaSyAnq2OW5BrYTkpnJ0O8BWyTTUOehJu6oV0"
         }
       ],
       "services": {
@@ -29,8 +37,13 @@
           "status": 1
         },
         "appinvite_service": {
-          "status": 1,
-          "other_platform_oauth_client": []
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "596145802146-pqk52fo4m0tufsgtm49gh3jfu0mfprkc.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         },
         "ads_service": {
           "status": 2

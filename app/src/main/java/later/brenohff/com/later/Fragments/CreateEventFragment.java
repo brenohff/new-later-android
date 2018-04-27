@@ -3,8 +3,12 @@ package later.brenohff.com.later.Fragments;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,9 +23,13 @@ import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlacePicker;
 import com.rengwuxian.materialedittext.MaterialEditText;
 import com.rey.material.widget.Switch;
+import com.soundcloud.android.crop.Crop;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
@@ -61,6 +69,9 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
 
     private Double lat, lon;
     private int PLACE_PICKER_REQUEST = 1;
+    private final int SELECT_PHOTO = 2;
+
+    private Uri eventImage = null;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -134,6 +145,7 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
                 break;
 
             case R.id.fragment_event_register_uploadImage:
+                startImagePickerActivity();
                 break;
 
             case R.id.fragment_event_register_register:
@@ -150,6 +162,21 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
         if (requestCode == PLACE_PICKER_REQUEST && resultCode == RESULT_OK) {
             displaySelectedPlaceFromPlacePicker(data);
         }
+        if (requestCode == SELECT_PHOTO && resultCode == RESULT_OK) {
+            try {
+                final Uri imageUri = data.getData();
+                final InputStream imageStream = getActivity().getContentResolver().openInputStream(imageUri);
+                final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
+                beginCrop(imageUri);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
+        if (requestCode == Crop.REQUEST_PICK && resultCode == RESULT_OK) {
+            beginCrop(data.getData());
+        } else if (requestCode == Crop.REQUEST_CROP) {
+            handleCrop(resultCode, data);
+        }
     }
 
     private boolean validateFields() {
@@ -165,10 +192,10 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
             descricao_et.setError("Insira uma descrição");
         }
 
-        if (local_texto.getText().toString().equals("Local")) {
-            b = false;
-            local_texto.setError("Insira uma local");
-        }
+//        if (local_texto.getText().toString().equals("Local")) {
+//            b = false;
+//            local_texto.setError("Insira uma local");
+//        }
 
         if (valor_et.getText().toString().isEmpty()) {
             b = false;
@@ -214,7 +241,7 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
             public void onResponse(Call<Void> call, Response<Void> response) {
                 if (response.isSuccessful()) {
                     Toast.makeText(context, "Evento inserido com sucesso.", Toast.LENGTH_SHORT).show();
-                }else{
+                } else {
                     Toast.makeText(context, "Não foi possível inserir evento - " + response.code(), Toast.LENGTH_SHORT).show();
                 }
             }
@@ -225,6 +252,29 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
             }
         });
     }
+
+    //region IMAGE PICKER
+
+    private void beginCrop(Uri source) {
+        eventImage = Uri.fromFile(new File(context.getCacheDir(), "cropped"));
+        Crop.of(source, eventImage).asSquare().start(context, this);
+    }
+
+    private void handleCrop(int resultCode, Intent result) {
+        if (resultCode == RESULT_OK) {
+            Log.d("CREATEEVENT", "");
+        } else if (resultCode == Crop.RESULT_ERROR) {
+            Toast.makeText(context, Crop.getError(result).getMessage(), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void startImagePickerActivity() {
+        Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
+        photoPickerIntent.setType("image/*");
+        startActivityForResult(photoPickerIntent, SELECT_PHOTO);
+    }
+
+    //endregion
 
     //region PLACE PICKER
     private void startPlacePickerActivity() {
@@ -294,6 +344,9 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
 
     }
 
+    //endregion
+
+    //region UPLOAD IMAGE
     //endregion
 
 

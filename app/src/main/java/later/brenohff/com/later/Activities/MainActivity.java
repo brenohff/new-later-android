@@ -28,6 +28,7 @@ import java.security.NoSuchAlgorithmException;
 
 import later.brenohff.com.later.Connections.LTConnection;
 import later.brenohff.com.later.Connections.LTRequests;
+import later.brenohff.com.later.Fragments.CategoriesFragment;
 import later.brenohff.com.later.Fragments.EventsFragment;
 import later.brenohff.com.later.Fragments.LoginFragment;
 import later.brenohff.com.later.Fragments.ProfileFragment;
@@ -92,7 +93,7 @@ public class MainActivity extends AppCompatActivity {
                         }
                         break;
                     case R.id.nav_categorias:
-                        showToast("Categorias");
+                        changeFragment(new CategoriesFragment(), "CategoriesFragment");
                         break;
                     case R.id.nav_eventos:
                         changeFragment(new EventsFragment(), "EventsFragment");
@@ -117,6 +118,7 @@ public class MainActivity extends AppCompatActivity {
                 bottomMenu.setSelectedItemId(R.id.nav_conta);
                 break;
             case 2:
+                bottomMenu.setSelectedItemId(R.id.nav_categorias);
                 break;
             case 3:
                 bottomMenu.setSelectedItemId(R.id.nav_eventos);

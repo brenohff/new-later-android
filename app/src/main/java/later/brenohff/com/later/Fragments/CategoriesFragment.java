@@ -1,0 +1,89 @@
+package later.brenohff.com.later.Fragments;
+
+import android.content.Context;
+import android.os.Bundle;
+import android.os.Parcelable;
+import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Toast;
+
+import java.util.List;
+
+import later.brenohff.com.later.Adapters.CategoriesAdapter;
+import later.brenohff.com.later.Connections.LTConnection;
+import later.brenohff.com.later.Connections.LTRequests;
+import later.brenohff.com.later.Models.LTCategory;
+import later.brenohff.com.later.Others.ItemClickSupport;
+import later.brenohff.com.later.R;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
+public class CategoriesFragment extends Fragment {
+
+    private Context context;
+
+    private RecyclerView recyclerView;
+    private RecyclerView.LayoutManager layoutManager;
+    private Parcelable recyclerViewState;
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_categories, container, false);
+        context = view.getContext();
+
+        castFields(view);
+
+        return view;
+    }
+
+    private void castFields(View view) {
+        recyclerView = (RecyclerView) view.findViewById(R.id.categories_recyclerview);
+        layoutManager = new LinearLayoutManager(getContext());
+        recyclerView.setLayoutManager(layoutManager);
+
+        getCategories();
+    }
+
+    private void getCategories() {
+        LTRequests requests = LTConnection.createService(LTRequests.class);
+        Call<List<LTCategory>> call = requests.getCategories();
+        call.enqueue(new Callback<List<LTCategory>>() {
+            @Override
+            public void onResponse(Call<List<LTCategory>> call, Response<List<LTCategory>> response) {
+                if (response.isSuccessful()) {
+                    List<LTCategory> ltCategories = response.body();
+                    recyclerViewState = recyclerView.getLayoutManager().onSaveInstanceState();
+                    mountRecycler(ltCategories);
+
+                } else {
+                    Toast.makeText(context, response.message(), Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<LTCategory>> call, Throwable t) {
+                Toast.makeText(context, "Não foi possível conectar ao servidor.", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void mountRecycler(final List<LTCategory> ltCategories) {
+        if (!ltCategories.isEmpty()) {
+            recyclerView.getLayoutManager().onRestoreInstanceState(recyclerViewState);
+            recyclerView.setHasFixedSize(true);
+            ItemClickSupport.addTo(recyclerView).setOnItemClickListener(new ItemClickSupport.OnItemClickListener() {
+                @Override
+                public void onItemClicked(RecyclerView recyclerView, int position, View v) {
+                    Toast.makeText(context, ltCategories.get(position).getName(), Toast.LENGTH_SHORT).show();
+                }
+            });
+            recyclerView.setAdapter(new CategoriesAdapter(ltCategories));
+        }
+    }
+
+}

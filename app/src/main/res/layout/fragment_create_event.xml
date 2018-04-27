@@ -7,11 +7,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <!--<ImageView-->
-    <!--android:id="@+id/fragment_event_register_background"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="match_parent"-->
-    <!--android:scaleType="fitXY" />-->
+    <ImageView
+        android:id="@+id/fragment_event_register_background"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="fitXY" />
 
     <ScrollView
         android:layout_width="match_parent"
@@ -73,27 +73,6 @@
 
                         app:met_textColor="@color/white"
                         app:met_textColorHint="@color/white" />
-
-                    <!--
-
-                    <com.rengwuxian.materialedittext.MaterialEditText
-                        android:id="@+id/fragment_event_register_local"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-
-                        android:hint="Local"
-                        android:imeOptions="actionNext"
-                        android:inputType="textCapCharacters"
-                        android:maxLines="1"
-
-                        app:met_floatingLabel="highlight"
-                        app:met_floatingLabelText="Local"
-                        app:met_primaryColor="@color/floatingButtonColor"
-
-                        app:met_textColor="@color/white"
-                        app:met_textColorHint="@color/white" />
-
-                    -->
 
                     <com.rengwuxian.materialedittext.MaterialEditText
                         android:id="@+id/fragment_event_register_valor"

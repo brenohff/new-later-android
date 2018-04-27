@@ -21,6 +21,8 @@
             </intent-filter>
         </activity>
 
+        <activity android:name="com.soundcloud.android.crop.CropImageActivity" />
+
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyDeXTNlxcwmfRJXQGuYvl5_r6zjftWb10s" />
