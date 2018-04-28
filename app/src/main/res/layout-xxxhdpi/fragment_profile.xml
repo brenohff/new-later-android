@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_alignParentStart="true"
+    android:orientation="vertical">
+
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/profile_fragment_imagem"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_margin="20dp"
+        android:background="@drawable/user"
+        android:scaleType="centerCrop"
+        app:civ_border_color="@color/white"
+        app:civ_border_width="1dp" />
+
+    <TextView
+        android:id="@+id/profile_fragment_nome"
+        android:layout_width="wrap_content"
+        android:layout_height="35dp"
+        android:layout_gravity="center_horizontal"
+        android:gravity="center"
+        android:textAlignment="center"
+        android:textColor="@color/white"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/profile_fragment_email"
+        android:layout_width="wrap_content"
+        android:layout_height="35dp"
+        android:layout_gravity="center_horizontal"
+        android:gravity="center"
+
+        android:textAlignment="center"
+        android:textColor="@color/white"
+        android:textSize="16sp" />
+
+    <Button
+        android:id="@+id/criar_evento"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:layout_marginTop="50dp"
+        android:background="@color/floatingButtonColor"
+
+        android:text="CRIAR EVENTO"
+        android:textColor="@color/white" />
+
+    <Button
+        android:id="@+id/aprovar_evento"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:layout_marginTop="10dp"
+        android:background="@color/floatingButtonColor"
+        android:text="APROVAR EVENTOS"
+        android:textColor="@color/white" />
+
+    <Button
+        android:id="@+id/meu_evento"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:layout_marginTop="10dp"
+        android:background="@color/floatingButtonColor"
+
+        android:text="Meus eventos"
+        android:textColor="@color/white" />
+
+    <Button
+        android:id="@+id/logout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:layout_marginTop="10dp"
+        android:background="@color/floatingButtonColor"
+
+        android:text="SAIR"
+        android:textColor="@color/white" />
+
+</LinearLayout>
