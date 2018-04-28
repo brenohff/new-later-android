@@ -1,11 +1,13 @@
 package later.brenohff.com.later.Models;
 
 import java.io.Serializable;
+import java.util.List;
 
 public class LTEvent implements Serializable {
 
     private Long id;
     private LTUser user;
+    private List<LTCategory> categories;
 
     private String title;
     private String description;
@@ -126,6 +128,14 @@ public class LTEvent implements Serializable {
 
     public void setPrivate(boolean aPrivate) {
         isPrivate = aPrivate;
+    }
+
+    public List<LTCategory> getCategories() {
+        return categories;
+    }
+
+    public void setCategories(List<LTCategory> categories) {
+        this.categories = categories;
     }
 
     //endregion

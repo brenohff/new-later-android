@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -30,6 +31,7 @@ import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
@@ -38,6 +40,7 @@ import later.brenohff.com.later.Activities.MainActivity;
 import later.brenohff.com.later.Connections.LTConnection;
 import later.brenohff.com.later.Connections.LTRequests;
 import later.brenohff.com.later.Memory.LTMainData;
+import later.brenohff.com.later.Models.LTCategory;
 import later.brenohff.com.later.Models.LTEvent;
 import later.brenohff.com.later.Others.MonetaryMask;
 import later.brenohff.com.later.R;
@@ -62,7 +65,7 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
     private TextView data_texto, hora_texto, local_texto;
     private TagView tagView;
     private List<Tag> tagList;
-    private List<String> categoriesList;
+    private List<LTCategory> categoriesList;
     private Switch modo;
     private MaterialEditText titulo_et, descricao_et, valor_et;
     private boolean isPrivate = false;
@@ -103,6 +106,10 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
         monetaryMask = new MonetaryMask(valor_et);
         valor_et.addTextChangedListener(monetaryMask);
 
+
+        /**
+         * OnClickListener
+         */
         modo.setOnClickListener(this);
         data_texto.setOnClickListener(this);
         hora_texto.setOnClickListener(this);
@@ -112,6 +119,11 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
         bt_upload.setOnClickListener(this);
         bt_hora.setOnClickListener(this);
         bt_local.setOnClickListener(this);
+
+        /**
+         * Chamada de métodos.
+         */
+        getCategories();
     }
 
     @Override
@@ -212,16 +224,83 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
             hora_texto.setError("Escolha um horário!");
         }
 
-//        if (categoriesList.isEmpty()) {
-//            b = false;
-//            Toast.makeText(context, "Escolha pelo menos 1 categoria", Toast.LENGTH_SHORT).show();
-//        }
+        if (categoriesList.isEmpty()) {
+            b = false;
+            Toast.makeText(context, "Escolha pelo menos 1 categoria", Toast.LENGTH_SHORT).show();
+        }
 
         return b;
     }
 
+    private void getCategories() {
+        LTRequests requests = LTConnection.createService(LTRequests.class);
+        Call<List<LTCategory>> call = requests.getCategories();
+        call.enqueue(new Callback<List<LTCategory>>() {
+            @Override
+            public void onResponse(Call<List<LTCategory>> call, Response<List<LTCategory>> response) {
+                if (response.isSuccessful()) {
+
+                    tagList = new ArrayList<Tag>();
+
+                    List<LTCategory> ltCategories = response.body();
+                    for (LTCategory category : ltCategories) {
+                        Tag tag = new Tag(category.getName().toUpperCase());
+                        tagList.add(tag);
+                    }
+
+                    mountaTagView(ltCategories);
+
+                } else {
+                    Toast.makeText(context, response.message(), Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<LTCategory>> call, Throwable t) {
+                Toast.makeText(context, "Não foi possível conectar ao servidor.", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void mountaTagView(final List<LTCategory> ltCategories) {
+        final boolean[] isChecked = new boolean[tagList.size()];
+        categoriesList = new ArrayList<>();
+        tagView.addTags(tagList);
+
+        for (int i = 0; i < isChecked.length; i++) {
+            isChecked[i] = false;
+            if (tagView.getChildAt(i) != null) {
+                tagView.getChildAt(i).setBackgroundColor(Color.TRANSPARENT);
+            }
+        }
+
+        tagView.setOnTagClickListener(new TagView.OnTagClickListener() {
+            @Override
+            public void onTagClick(Tag tag, int i) {
+                if (!isChecked[i]) {
+                    isChecked[i] = true;
+                    for (LTCategory category : ltCategories) {
+                        if (tag.text.equals(category.getName().toUpperCase())) {
+                            tagView.getChildAt(i).setBackgroundColor(Color.parseColor(category.getBaseColor()));
+                            categoriesList.add(category);
+                        }
+                    }
+                } else {
+                    isChecked[i] = false;
+                    tagView.getChildAt(i).setBackgroundColor(Color.TRANSPARENT);
+                    for (LTCategory category : ltCategories) {
+                        if (tag.text.equals(category.getName().toUpperCase())) {
+                            categoriesList.remove(category);
+                        }
+                    }
+                }
+            }
+        });
+    }
+
     private void saveEvent() {
         ltEvent = new LTEvent();
+        ltEvent.setCategories(categoriesList);
         ltEvent.setStatus("avaliacao");
         ltEvent.setPrivate(isPrivate);
         ltEvent.setLat(lat);

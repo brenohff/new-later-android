@@ -21,10 +21,10 @@
             android:layout_height="match_parent">
 
             <ImageView
+                android:id="@+id/viewHolderEventBackground"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:scaleType="centerCrop"
-                android:src="@drawable/sensation" />
+                android:scaleType="centerCrop" />
 
             <ImageView
                 android:id="@+id/coracao"
@@ -100,7 +100,6 @@
                         android:layout_marginLeft="5dp"
                         android:fontFamily="@font/philosopher_regular"
                         android:gravity="center_vertical"
-                        android:text="20/02 às 22:00"
                         android:textColor="#FFF"
                         android:textSize="14sp" />
 
