@@ -13,6 +13,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Base64;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Toast;
@@ -41,7 +42,7 @@ import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
 
-    private BottomNavigationView bottomMenu;
+    private static BottomNavigationView bottomMenu;
 
     boolean doubleBackToExitPressedOnce = false;
 
@@ -236,6 +237,16 @@ public class MainActivity extends AppCompatActivity {
 
     //region PERMISSIONS
 
+    //endregion
+
+    //region BOTTOM BAR
+    public static void setBottomBarInvisible() {
+        bottomMenu.setVisibility(View.GONE);
+    }
+
+    public static void setBottomBarVisible() {
+        bottomMenu.setVisibility(View.VISIBLE);
+    }
     //endregion
 
 }

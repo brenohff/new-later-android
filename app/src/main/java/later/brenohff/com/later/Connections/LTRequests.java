@@ -3,6 +3,7 @@ package later.brenohff.com.later.Connections;
 import java.util.List;
 
 import later.brenohff.com.later.Models.LTCategory;
+import later.brenohff.com.later.Models.LTChat;
 import later.brenohff.com.later.Models.LTEvent;
 import later.brenohff.com.later.Models.LTUser;
 import retrofit2.Call;
@@ -47,5 +48,8 @@ public interface LTRequests {
     ////////////////////////////////////////////////////////////////////////////////////////////////////
     ///// COMMENTS
     ////////////////////////////////////////////////////////////////////////////////////////////////////
+    @GET("chat/getChatByEventId")
+    Call<List<LTChat>> getChatByEventId(@Query("eventId") String eventId);
+
 
 }

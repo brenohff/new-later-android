@@ -1,6 +1,7 @@
 package later.brenohff.com.later.Adapters;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -13,12 +14,13 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
+import later.brenohff.com.later.Activities.MainActivity;
+import later.brenohff.com.later.Fragments.EventFragment;
 import later.brenohff.com.later.Models.LTEvent;
 import later.brenohff.com.later.Others.ResizeAnimation;
 import later.brenohff.com.later.R;
@@ -58,7 +60,11 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventViewH
         holder.info.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(context, event.getDescription(), Toast.LENGTH_SHORT).show();
+                EventFragment eventFragment = new EventFragment();
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("event", event);
+                eventFragment.setArguments(bundle);
+                ((MainActivity) context).pushFragmentWithStack(eventFragment, "EventFragment");
             }
         });
     }

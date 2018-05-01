@@ -9,7 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="300dp"
         android:animateLayoutChanges="true"
-        app:cardBackgroundColor="#000"
+        app:cardBackgroundColor="@color/background1"
         app:cardCornerRadius="10dp"
         app:cardElevation="5dp"
         app:cardUseCompatPadding="true">
@@ -24,7 +24,7 @@
                 android:id="@+id/viewHolderEventBackground"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:scaleType="centerCrop"/>
+                android:scaleType="centerCrop" />
 
             <ImageView
                 android:id="@+id/coracao"
@@ -122,6 +122,8 @@
                             android:id="@+id/profile_image"
                             android:layout_width="40dp"
                             android:layout_height="match_parent"
+                            android:src="@drawable/sensation"
+                            android:scaleType="centerCrop"
                             app:civ_border_color="#FFF"
                             app:civ_border_width="1dp" />
 
@@ -130,6 +132,8 @@
                             android:layout_width="40dp"
                             android:layout_height="match_parent"
                             android:layout_marginStart="20dp"
+                            android:src="@drawable/sensation"
+                            android:scaleType="centerCrop"
                             app:civ_border_color="#FFF"
                             app:civ_border_width="1dp" />
 
@@ -138,6 +142,8 @@
                             android:layout_width="40dp"
                             android:layout_height="match_parent"
                             android:layout_marginStart="40dp"
+                            android:src="@drawable/sensation"
+                            android:scaleType="centerCrop"
                             app:civ_border_color="#FFF"
                             app:civ_border_width="1dp" />
 
