@@ -98,11 +98,15 @@ public class CommentFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 String message = etMessage.getText().toString();
-                if (!("").equals(message) && !message.isEmpty()) {
-                    sendMessge();
-                    etMessage.setText("");
-                } else {
-                    Toast.makeText(context, "Insira um comentário.", Toast.LENGTH_SHORT).show();
+                if (LTMainData.getInstance().getUser() != null) {
+                    if (!("").equals(message)) {
+                        sendMessge();
+                        etMessage.setText("");
+                    } else {
+                        Toast.makeText(context, "Insira um comentário.", Toast.LENGTH_SHORT).show();
+                    }
+                }else{
+                    Toast.makeText(context, "Faça login para comentar!", Toast.LENGTH_SHORT).show();
                 }
             }
         });

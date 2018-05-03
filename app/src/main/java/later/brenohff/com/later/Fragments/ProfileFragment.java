@@ -73,6 +73,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         switch (view.getId()) {
             case R.id.logout:
                 LoginManager.getInstance().logOut();
+                LTMainData.getInstance().setUser(null);
                 ((MainActivity) context).pushFragmentWithNoStack(new LoginFragment(), "LoginFragment");
                 break;
             case R.id.criar_evento:
