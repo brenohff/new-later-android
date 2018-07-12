@@ -315,7 +315,7 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
         ltEvent.setUser(LTMainData.getInstance().getUser());
 
         Random r = new Random();
-        ltEvent.setImage(categoriesList.get(r.nextInt()).getUrl());
+        ltEvent.setImage(categoriesList.get(r.nextInt(categoriesList.size())).getUrl());
 
         final LTRequests requests = LTConnection.createService(LTRequests.class);
         Call<Void> call = requests.registerEvent(ltEvent);

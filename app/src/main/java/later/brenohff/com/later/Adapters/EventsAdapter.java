@@ -12,7 +12,6 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
@@ -80,7 +79,6 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventViewH
         private TextView nome, hora, local;
         private CardView cardview;
         private ImageView coracao;
-        private RelativeLayout relativeLayout;
         private LinearLayout info, whoGo, data;
 
         private boolean b = true;
@@ -130,7 +128,6 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventViewH
 
                 @Override
                 public void onAnimationEnd(Animation animation) {
-
                 }
 
                 @Override
@@ -148,7 +145,6 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventViewH
             animation.setAnimationListener(new Animation.AnimationListener() {
                 @Override
                 public void onAnimationStart(Animation animation) {
-
                 }
 
                 @Override

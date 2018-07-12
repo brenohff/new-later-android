@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tagview="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -64,15 +65,17 @@
                         android:id="@+id/marcador"
                         android:layout_width="25dp"
                         android:layout_height="25dp"
+                        android:layout_gravity="center_vertical"
                         android:src="@drawable/marcador" />
 
                     <TextView
                         android:id="@+id/local"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
                         android:layout_marginLeft="5dp"
                         android:fontFamily="@font/philosopher_regular"
                         android:gravity="center_vertical"
+                        android:minHeight="25dp"
                         android:textColor="#FFF"
                         android:textSize="16sp" />
 
@@ -82,7 +85,7 @@
                     android:id="@+id/data"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="2dp"
+                    android:layout_marginTop="5dp"
                     android:alpha="0"
                     android:animateLayoutChanges="true"
                     android:orientation="horizontal">
@@ -105,11 +108,21 @@
 
                 </LinearLayout>
 
+                <com.cunoraz.tagview.TagView
+                    android:id="@+id/fragment_event_tag_group"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="5dp"
+                    android:gravity="center_vertical"
+                    android:visibility="invisible"
+                    tagview:lineMargin="10dp"
+                    tagview:tagMargin="5dp" />
+
                 <LinearLayout
                     android:id="@+id/whoGo"
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
-                    android:layout_marginTop="2dp"
+                    android:layout_marginTop="5dp"
                     android:alpha="0"
                     android:animateLayoutChanges="true"
                     android:orientation="horizontal">
@@ -122,8 +135,8 @@
                             android:id="@+id/profile_image"
                             android:layout_width="40dp"
                             android:layout_height="match_parent"
-                            android:src="@drawable/sensation"
                             android:scaleType="centerCrop"
+                            android:src="@drawable/sensation"
                             app:civ_border_color="#FFF"
                             app:civ_border_width="1dp" />
 
@@ -132,8 +145,8 @@
                             android:layout_width="40dp"
                             android:layout_height="match_parent"
                             android:layout_marginStart="20dp"
-                            android:src="@drawable/sensation"
                             android:scaleType="centerCrop"
+                            android:src="@drawable/sensation"
                             app:civ_border_color="#FFF"
                             app:civ_border_width="1dp" />
 
@@ -142,8 +155,8 @@
                             android:layout_width="40dp"
                             android:layout_height="match_parent"
                             android:layout_marginStart="40dp"
-                            android:src="@drawable/sensation"
                             android:scaleType="centerCrop"
+                            android:src="@drawable/sensation"
                             app:civ_border_color="#FFF"
                             app:civ_border_width="1dp" />
 

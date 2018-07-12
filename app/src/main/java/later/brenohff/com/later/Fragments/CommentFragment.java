@@ -51,6 +51,7 @@ public class CommentFragment extends Fragment {
     private Context context;
     private LTEvent event;
     private List<LTChat> ltChats;
+    private CommentAdapter adapter;
 
     private static final String TAG = "COMMENT-FRAGMENT";
     private StompClient mStompClient;
@@ -66,13 +67,22 @@ public class CommentFragment extends Fragment {
         if (getArguments() != null) {
             event = (LTEvent) getArguments().getSerializable("event");
         }
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
         MainActivity.setBottomBarInvisible();
+        getChats();
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        mStompClient.disconnect();
+        if (mStompClient != null) {
+            mStompClient.disconnect();
+
+        }
         MainActivity.setBottomBarVisible();
     }
 
@@ -98,25 +108,26 @@ public class CommentFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 String message = etMessage.getText().toString();
-                if (LTMainData.getInstance().getUser() != null) {
-                    if (!("").equals(message)) {
-                        sendMessge();
-                        etMessage.setText("");
+                if (mStompClient != null) {
+                    if (LTMainData.getInstance().getUser() != null) {
+                        if (!("").equals(message)) {
+                            sendMessge();
+                            etMessage.setText("");
+                        } else {
+                            Toast.makeText(context, "Insira um comentário.", Toast.LENGTH_SHORT).show();
+                        }
                     } else {
-                        Toast.makeText(context, "Insira um comentário.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, "Faça login para comentar!", Toast.LENGTH_SHORT).show();
                     }
-                }else{
-                    Toast.makeText(context, "Faça login para comentar!", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(context, "Conexão não estabelecida.", Toast.LENGTH_SHORT).show();
                 }
             }
         });
-
-        getChats();
     }
 
     private void conectSocket() {
-        mStompClient = Stomp.over(WebSocket.class, "ws://later-backend.herokuapp.com/event/websocket");
-//        mStompClient = Stomp.over(WebSocket.class, "ws://192.168.0.22:8080/event/websocket");
+        mStompClient = Stomp.over(WebSocket.class, LTConnection.SOCKET);
 
         mStompClient.lifecycle()
                 .subscribeOn(Schedulers.io())
@@ -157,12 +168,14 @@ public class CommentFragment extends Fragment {
                     mountRecycler(ltChats);
 
                     conectSocket();
+                } else {
+                    Toast.makeText(context, "Erro ao obter conversas.", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<List<LTChat>> call, Throwable t) {
-
+                Toast.makeText(context, "Falha ao obter conversas, verifique conexão.", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -191,7 +204,6 @@ public class CommentFragment extends Fragment {
             Toast.makeText(context, "Não foi possível enviar chat, verifique conexão.", Toast.LENGTH_SHORT).show();
         }
 
-
     }
 
     private void updateRecycler(LTChat chat) {
@@ -200,11 +212,12 @@ public class CommentFragment extends Fragment {
     }
 
     private void mountRecycler(List<LTChat> ltChats) {
+        adapter = new CommentAdapter(ltChats);
         LinearLayoutManager layoutManager = new LinearLayoutManager(context);
         layoutManager.setStackFromEnd(true);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setHasFixedSize(true);
-        recyclerView.setAdapter(new CommentAdapter(ltChats));
+        recyclerView.setAdapter(adapter);
     }
 
     //region SET BACKGROUND ROUNDED COLORS
