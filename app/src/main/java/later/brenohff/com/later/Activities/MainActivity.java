@@ -64,14 +64,28 @@ public class MainActivity extends AppCompatActivity {
                     doubleBackToExitPressedOnce = false;
                 }
             }, 2000);
-        } else
+        } else {
             popFragment(1);
+        }
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        try {
+            PackageInfo info = getPackageManager().getPackageInfo("later.brenohff.com.later", PackageManager.GET_SIGNATURES);
+            for (Signature signature : info.signatures) {
+                MessageDigest md = MessageDigest.getInstance("SHA");
+                md.update(signature.toByteArray());
+                Log.d("KeyHash:", Base64.encodeToString(md.digest(), Base64.DEFAULT));
+            }
+        } catch (NameNotFoundException e) {
+
+        } catch (NoSuchAlgorithmException e) {
+
+        }
 
         if (AccessToken.getCurrentAccessToken() != null) {
             getUser(Profile.getCurrentProfile().getId());
@@ -87,21 +101,21 @@ public class MainActivity extends AppCompatActivity {
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.nav_conta:
-                        if (AccessToken.getCurrentAccessToken() != null) {
-                            getUser(Profile.getCurrentProfile().getId());
-                        } else {
-                            changeFragment(new LoginFragment(), "LoginFragment");
-                        }
-                        break;
+                    if (AccessToken.getCurrentAccessToken() != null) {
+                        getUser(Profile.getCurrentProfile().getId());
+                    } else {
+                        changeFragment(new LoginFragment(), "LoginFragment");
+                    }
+                    break;
                     case R.id.nav_categorias:
-                        changeFragment(new CategoriesFragment(), "CategoriesFragment");
-                        break;
+                    changeFragment(new CategoriesFragment(), "CategoriesFragment");
+                    break;
                     case R.id.nav_eventos:
-                        changeFragment(new EventsFragment(), "EventsFragment");
-                        break;
+                    changeFragment(new EventsFragment(), "EventsFragment");
+                    break;
                     case R.id.nav_mapa:
-                        showToast("Mapa");
-                        break;
+                    showToast("Mapa");
+                    break;
                 }
                 return true;
             }
@@ -116,39 +130,39 @@ public class MainActivity extends AppCompatActivity {
     public void setFragment(Integer position) {
         switch (position) {
             case 1:
-                bottomMenu.setSelectedItemId(R.id.nav_conta);
-                break;
+            bottomMenu.setSelectedItemId(R.id.nav_conta);
+            break;
             case 2:
-                bottomMenu.setSelectedItemId(R.id.nav_categorias);
-                break;
+            bottomMenu.setSelectedItemId(R.id.nav_categorias);
+            break;
             case 3:
-                bottomMenu.setSelectedItemId(R.id.nav_eventos);
-                break;
+            bottomMenu.setSelectedItemId(R.id.nav_eventos);
+            break;
             case 4:
-                break;
+            break;
 
         }
     }
 
     public void pushFragmentWithStack(Fragment fragment, String tag) {
         this.getSupportFragmentManager().beginTransaction()
-                .setCustomAnimations(R.animator.fragment_slide_left_enter,
-                        R.animator.fragment_slide_left_exit,
-                        R.animator.fragment_slide_right_enter,
-                        R.animator.fragment_slide_right_exit)
-                .replace(R.id.main_container, fragment, tag)
-                .addToBackStack(tag)
-                .commit();
+        .setCustomAnimations(R.animator.fragment_slide_left_enter,
+            R.animator.fragment_slide_left_exit,
+            R.animator.fragment_slide_right_enter,
+            R.animator.fragment_slide_right_exit)
+        .replace(R.id.main_container, fragment, tag)
+        .addToBackStack(tag)
+        .commit();
     }
 
     public void pushFragmentWithNoStack(Fragment fragment, String tag) {
         this.getSupportFragmentManager().beginTransaction()
-                .setCustomAnimations(R.animator.fragment_slide_left_enter,
-                        R.animator.fragment_slide_left_exit,
-                        R.animator.fragment_slide_right_enter,
-                        R.animator.fragment_slide_right_exit)
-                .replace(R.id.main_container, fragment, tag)
-                .commit();
+        .setCustomAnimations(R.animator.fragment_slide_left_enter,
+            R.animator.fragment_slide_left_exit,
+            R.animator.fragment_slide_right_enter,
+            R.animator.fragment_slide_right_exit)
+        .replace(R.id.main_container, fragment, tag)
+        .commit();
     }
 
     public void popFragment(Integer qtd) {
