@@ -55,7 +55,7 @@ public class CommentFragment extends Fragment {
 
     private static final String TAG = "COMMENT-FRAGMENT";
     private StompClient mStompClient;
-    private Gson mGson = new GsonBuilder().create();
+    private Gson mGson = new GsonBuilder().setDateFormat("dd/MM/yyyy HH:mm:ss").create();
     private RecyclerView recyclerView;
     private EditText etMessage;
     private ImageButton btSend;
