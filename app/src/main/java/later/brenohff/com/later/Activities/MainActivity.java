@@ -11,6 +11,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Base64;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -23,6 +24,8 @@ import com.facebook.FacebookSdk;
 import com.facebook.Profile;
 import com.facebook.appevents.AppEventsLogger;
 import com.facebook.login.LoginManager;
+import com.roughike.bottombar.BottomBar;
+import com.roughike.bottombar.OnTabSelectListener;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -44,7 +47,7 @@ import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static BottomNavigationView bottomMenu;
+    private static BottomBar bottomMenu;
 
     boolean doubleBackToExitPressedOnce = false;
 
@@ -93,12 +96,12 @@ public class MainActivity extends AppCompatActivity {
         initFB();
         showFBInfo();
 
-        bottomMenu = (BottomNavigationView) findViewById(R.id.bottom_nav_view);
+        bottomMenu = (BottomBar) findViewById(R.id.bottom_nav_view);
 
-        bottomMenu.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+        bottomMenu.setOnTabSelectListener(new OnTabSelectListener() {
             @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                switch (item.getItemId()) {
+            public void onTabSelected(int tabId) {
+                switch (tabId){
                     case R.id.nav_conta:
                         if (LTMainData.getInstance().getUser() != null) {
                             changeFragment(new ProfileFragment(), "ProfileFragment");
@@ -116,11 +119,10 @@ public class MainActivity extends AppCompatActivity {
                         showToast("Mapa");
                         break;
                 }
-                return true;
             }
         });
 
-        setFragment(1);
+        setFragment(3);
         changeStatusBarColor(R.color.background);
     }
 
@@ -129,13 +131,13 @@ public class MainActivity extends AppCompatActivity {
     public void setFragment(Integer position) {
         switch (position) {
             case 1:
-                bottomMenu.setSelectedItemId(R.id.nav_conta);
+                bottomMenu.selectTabWithId(R.id.nav_conta);
                 break;
             case 2:
-                bottomMenu.setSelectedItemId(R.id.nav_categorias);
+                bottomMenu.selectTabWithId(R.id.nav_categorias);
                 break;
             case 3:
-                bottomMenu.setSelectedItemId(R.id.nav_eventos);
+                bottomMenu.selectTabWithId(R.id.nav_eventos);
                 break;
             case 4:
                 break;
@@ -145,10 +147,10 @@ public class MainActivity extends AppCompatActivity {
 
     public void pushFragmentWithStack(Fragment fragment, String tag) {
         this.getSupportFragmentManager().beginTransaction()
-//        .setCustomAnimations(R.animator.fragment_slide_left_enter,
-//            R.animator.fragment_slide_left_exit,
-//            R.animator.fragment_slide_right_enter,
-//            R.animator.fragment_slide_right_exit)
+        .setCustomAnimations(R.animator.fragment_slide_left_enter,
+            R.animator.fragment_slide_left_exit,
+            R.animator.fragment_slide_right_enter,
+            R.animator.fragment_slide_right_exit)
                 .replace(R.id.main_container, fragment, tag)
                 .addToBackStack(tag)
                 .commit();
@@ -156,10 +158,10 @@ public class MainActivity extends AppCompatActivity {
 
     public void pushFragmentWithNoStack(Fragment fragment, String tag) {
         this.getSupportFragmentManager().beginTransaction()
-//        .setCustomAnimations(R.animator.fragment_slide_left_enter,
-//            R.animator.fragment_slide_left_exit,
-//            R.animator.fragment_slide_right_enter,
-//            R.animator.fragment_slide_right_exit)
+        .setCustomAnimations(R.animator.fragment_slide_left_enter,
+            R.animator.fragment_slide_left_exit,
+            R.animator.fragment_slide_right_enter,
+            R.animator.fragment_slide_right_exit)
                 .replace(R.id.main_container, fragment, tag)
                 .commit();
     }
@@ -233,5 +235,15 @@ public class MainActivity extends AppCompatActivity {
         bottomMenu.setVisibility(View.VISIBLE);
     }
     //endregion
+
+    public int getWidth() {
+        DisplayMetrics metrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(metrics);
+
+        int width = metrics.widthPixels;
+
+        return width;
+
+    }
 
 }

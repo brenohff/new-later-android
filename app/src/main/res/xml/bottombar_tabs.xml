@@ -1,0 +1,19 @@
+<tabs>
+    <tab
+        icon="@drawable/ic_person"
+        id="@+id/nav_conta"
+        title="Perfil" />
+    <tab
+        icon="@drawable/ic_menu"
+        id="@+id/nav_categorias"
+        title="Categorias" />
+    <tab
+        icon="@drawable/ic_favorite"
+        id="@+id/nav_eventos"
+        title="Eventos" />
+    <tab
+        icon="@drawable/ic_location_on"
+        id="@+id/nav_mapa"
+        title="Mapa" />
+</tabs>
+

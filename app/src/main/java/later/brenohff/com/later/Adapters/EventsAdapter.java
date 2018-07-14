@@ -29,6 +29,8 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventViewH
 
     private Context context;
     private List<LTEvent> eventList;
+    private boolean liked = false;
+    private int width;
 
     public EventsAdapter(List<LTEvent> eventList) {
         this.eventList = eventList;
@@ -39,7 +41,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventViewH
     public EventViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.viewholder_event, parent, false);
         context = view.getContext();
-
+        width = ((MainActivity) context).getWidth();
         return new EventViewHolder(view);
     }
 
@@ -65,7 +67,12 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventViewH
         holder.coracao.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(context, "Liked", Toast.LENGTH_SHORT).show();
+                if (liked) {
+                    holder.coracao.setImageDrawable(context.getDrawable(R.drawable.ic_icons8_heart_outline_100));
+                } else {
+                    holder.coracao.setImageDrawable(context.getDrawable(R.drawable.ic_icons8_heart_outline_filled_100));
+                }
+                liked = !liked;
             }
         });
     }

@@ -81,7 +81,7 @@ public class CommentFragment extends Fragment {
         super.onDestroy();
         if (mStompClient != null) {
             mStompClient.disconnect();
-
+            etMessage.clearFocus();
         }
         MainActivity.setBottomBarVisible();
     }

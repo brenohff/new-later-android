@@ -32,12 +32,12 @@
 
         <ImageView
             android:id="@+id/coracao"
-            android:layout_width="35dp"
-            android:layout_height="35dp"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
             android:layout_alignParentEnd="true"
             android:layout_alignParentTop="true"
-            android:layout_margin="10dp"
-            android:src="@drawable/copas" />
+            android:padding="10dp"
+            android:src="@drawable/ic_icons8_heart_outline_100" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -64,7 +64,7 @@
                     android:layout_width="25dp"
                     android:layout_height="25dp"
                     android:layout_gravity="center_vertical"
-                    android:src="@drawable/marcador" />
+                    android:src="@drawable/ic_icons8_marker_100" />
 
                 <TextView
                     android:id="@+id/local"
@@ -89,7 +89,7 @@
                 <ImageView
                     android:layout_width="25dp"
                     android:layout_height="25dp"
-                    android:src="@drawable/hora" />
+                    android:src="@drawable/ic_watch" />
 
                 <TextView
                     android:id="@+id/hora"
