@@ -25,6 +25,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 import later.brenohff.com.later.Activities.MainActivity;
 import later.brenohff.com.later.Memory.LTMainData;
 import later.brenohff.com.later.Models.LTUser;
+import later.brenohff.com.later.Others.SaveUserOnDevice;
 import later.brenohff.com.later.R;
 
 import static android.content.Context.LOCATION_SERVICE;
@@ -74,6 +75,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
             case R.id.logout:
                 LoginManager.getInstance().logOut();
                 LTMainData.getInstance().setUser(null);
+                SaveUserOnDevice.removeSavedUser(context);
                 ((MainActivity) context).pushFragmentWithNoStack(new LoginFragment(), "LoginFragment");
                 break;
             case R.id.criar_evento:

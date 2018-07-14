@@ -26,6 +26,7 @@ import com.facebook.login.LoginManager;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Objects;
 
 import later.brenohff.com.later.Connections.LTConnection;
 import later.brenohff.com.later.Connections.LTRequests;
@@ -35,6 +36,7 @@ import later.brenohff.com.later.Fragments.LoginFragment;
 import later.brenohff.com.later.Fragments.ProfileFragment;
 import later.brenohff.com.later.Memory.LTMainData;
 import later.brenohff.com.later.Models.LTUser;
+import later.brenohff.com.later.Others.SaveUserOnDevice;
 import later.brenohff.com.later.R;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -74,21 +76,18 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        try {
-            PackageInfo info = getPackageManager().getPackageInfo("later.brenohff.com.later", PackageManager.GET_SIGNATURES);
-            for (Signature signature : info.signatures) {
-                MessageDigest md = MessageDigest.getInstance("SHA");
-                md.update(signature.toByteArray());
-                Log.d("KeyHash:", Base64.encodeToString(md.digest(), Base64.DEFAULT));
-            }
-        } catch (PackageManager.NameNotFoundException e) {
-
-        } catch (NoSuchAlgorithmException e) {
-
-        }
-
         if (AccessToken.getCurrentAccessToken() != null) {
-            getUser(Profile.getCurrentProfile().getId());
+            if (SaveUserOnDevice.loadSavedUser(this) != null) {
+                LTMainData.getInstance().setUser(Objects.requireNonNull(SaveUserOnDevice.loadSavedUser(this)).getUser());
+                changeFragment(new ProfileFragment(), "ProfileFragment");
+            } else {
+                showToast("Não foi possível carregar usuário, faça login novamente.");
+                LoginManager.getInstance().logOut();
+                SaveUserOnDevice.removeSavedUser(this);
+                changeFragment(new LoginFragment(), "LoginFragment");
+            }
+        } else {
+            changeFragment(new LoginFragment(), "LoginFragment");
         }
 
         initFB();
@@ -101,21 +100,21 @@ public class MainActivity extends AppCompatActivity {
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.nav_conta:
-                    if (AccessToken.getCurrentAccessToken() != null) {
-                        getUser(Profile.getCurrentProfile().getId());
-                    } else {
-                        changeFragment(new LoginFragment(), "LoginFragment");
-                    }
-                    break;
+                        if (LTMainData.getInstance().getUser() != null) {
+                            changeFragment(new ProfileFragment(), "ProfileFragment");
+                        } else {
+                            changeFragment(new LoginFragment(), "LoginFragment");
+                        }
+                        break;
                     case R.id.nav_categorias:
-                    changeFragment(new CategoriesFragment(), "CategoriesFragment");
-                    break;
+                        changeFragment(new CategoriesFragment(), "CategoriesFragment");
+                        break;
                     case R.id.nav_eventos:
-                    changeFragment(new EventsFragment(), "EventsFragment");
-                    break;
+                        changeFragment(new EventsFragment(), "EventsFragment");
+                        break;
                     case R.id.nav_mapa:
-                    showToast("Mapa");
-                    break;
+                        showToast("Mapa");
+                        break;
                 }
                 return true;
             }
@@ -130,39 +129,39 @@ public class MainActivity extends AppCompatActivity {
     public void setFragment(Integer position) {
         switch (position) {
             case 1:
-            bottomMenu.setSelectedItemId(R.id.nav_conta);
-            break;
+                bottomMenu.setSelectedItemId(R.id.nav_conta);
+                break;
             case 2:
-            bottomMenu.setSelectedItemId(R.id.nav_categorias);
-            break;
+                bottomMenu.setSelectedItemId(R.id.nav_categorias);
+                break;
             case 3:
-            bottomMenu.setSelectedItemId(R.id.nav_eventos);
-            break;
+                bottomMenu.setSelectedItemId(R.id.nav_eventos);
+                break;
             case 4:
-            break;
+                break;
 
         }
     }
 
     public void pushFragmentWithStack(Fragment fragment, String tag) {
         this.getSupportFragmentManager().beginTransaction()
-        .setCustomAnimations(R.animator.fragment_slide_left_enter,
-            R.animator.fragment_slide_left_exit,
-            R.animator.fragment_slide_right_enter,
-            R.animator.fragment_slide_right_exit)
-        .replace(R.id.main_container, fragment, tag)
-        .addToBackStack(tag)
-        .commit();
+//        .setCustomAnimations(R.animator.fragment_slide_left_enter,
+//            R.animator.fragment_slide_left_exit,
+//            R.animator.fragment_slide_right_enter,
+//            R.animator.fragment_slide_right_exit)
+                .replace(R.id.main_container, fragment, tag)
+                .addToBackStack(tag)
+                .commit();
     }
 
     public void pushFragmentWithNoStack(Fragment fragment, String tag) {
         this.getSupportFragmentManager().beginTransaction()
-        .setCustomAnimations(R.animator.fragment_slide_left_enter,
-            R.animator.fragment_slide_left_exit,
-            R.animator.fragment_slide_right_enter,
-            R.animator.fragment_slide_right_exit)
-        .replace(R.id.main_container, fragment, tag)
-        .commit();
+//        .setCustomAnimations(R.animator.fragment_slide_left_enter,
+//            R.animator.fragment_slide_left_exit,
+//            R.animator.fragment_slide_right_enter,
+//            R.animator.fragment_slide_right_exit)
+                .replace(R.id.main_container, fragment, tag)
+                .commit();
     }
 
     public void popFragment(Integer qtd) {
@@ -218,34 +217,6 @@ public class MainActivity extends AppCompatActivity {
 
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
-        }
-    }
-
-    private void getUser(String id) {
-
-        if (LTMainData.getInstance().getUser() != null) {
-            changeFragment(new ProfileFragment(), "ProfileFragment");
-        } else {
-            LTRequests request = LTConnection.createService(LTRequests.class);
-            Call<LTUser> call = request.getUserByFaceID(id);
-            call.enqueue(new Callback<LTUser>() {
-                @Override
-                public void onResponse(Call<LTUser> call, Response<LTUser> response) {
-                    if (response.isSuccessful()) {
-                        LTMainData.getInstance().setUser(response.body());
-                        changeFragment(new ProfileFragment(), "ProfileFragment");
-                    } else {
-                        showToast("Não foi possível carregar usuário, faça login novamente.");
-                        LoginManager.getInstance().logOut();
-                        changeFragment(new LoginFragment(), "LoginFragment");
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<LTUser> call, Throwable t) {
-                    showToast("Erro ao conectar com servidor.");
-                }
-            });
         }
     }
 

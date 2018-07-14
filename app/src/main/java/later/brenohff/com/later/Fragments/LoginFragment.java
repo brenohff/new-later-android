@@ -31,6 +31,7 @@ import later.brenohff.com.later.Connections.LTConnection;
 import later.brenohff.com.later.Connections.LTRequests;
 import later.brenohff.com.later.Memory.LTMainData;
 import later.brenohff.com.later.Models.LTUser;
+import later.brenohff.com.later.Others.SaveUserOnDevice;
 import later.brenohff.com.later.R;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -135,10 +136,14 @@ public class LoginFragment extends Fragment {
                     LTMainData.getInstance().setUser(user);
                     ((MainActivity) context).showToast("Bem vindo, " + user.getName());
                     ((MainActivity) context).pushFragmentWithNoStack(new ProfileFragment(), "ProfileFragment");
+                    SaveUserOnDevice saveUserOnDevice = new SaveUserOnDevice(user);
+                    saveUserOnDevice.saveUser(context);
                 } else if (response.code() == 409) {
                     LTMainData.getInstance().setUser(user);
                     ((MainActivity) context).showToast("Olá novamente, " + user.getName());
                     ((MainActivity) context).pushFragmentWithNoStack(new ProfileFragment(), "ProfileFragment");
+                    SaveUserOnDevice saveUserOnDevice = new SaveUserOnDevice(user);
+                    saveUserOnDevice.saveUser(context);
                 } else {
                     LoginManager.getInstance().logOut();
                     ((MainActivity) context).showToast("Não foi possível realizar login.");
