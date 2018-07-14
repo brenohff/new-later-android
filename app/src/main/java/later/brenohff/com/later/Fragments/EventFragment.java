@@ -8,8 +8,12 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.getbase.floatingactionbutton.FloatingActionButton;
+import com.google.android.gms.ads.formats.NativeAd;
+import com.squareup.picasso.Picasso;
 
 import later.brenohff.com.later.Activities.MainActivity;
 import later.brenohff.com.later.Models.LTEvent;
@@ -22,8 +26,11 @@ public class EventFragment extends Fragment implements View.OnClickListener {
 
     private Context context;
     private LTEvent event;
+    private String[] meses = {"jan", "fev", "mar", "abr", "mai", "jun", "jul", "ago", "set", "out", "nov", "dez"};
 
     private FloatingActionButton btComment;
+    private ImageView event_image;
+    private TextView event_title;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -46,6 +53,11 @@ public class EventFragment extends Fragment implements View.OnClickListener {
 
     private void castFields(View view) {
         btComment = (FloatingActionButton) view.findViewById(R.id.fragment_event_floating_coment);
+        event_image = (ImageView) view.findViewById(R.id.fragment_event_viewpager);
+        event_title = (TextView) view.findViewById(R.id.event_title);
+
+        Picasso.get().load(event.getImage()).into(event_image);
+        event_title.setText(event.getTitle());
 
         btComment.setOnClickListener(this);
     }
