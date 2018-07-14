@@ -13,6 +13,7 @@ import android.view.animation.Animation;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
@@ -50,13 +51,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventViewH
         holder.local.setText(event.getLocale());
         holder.hora.setText(event.getDate() + " - " + event.getHour());
 
-//        holder.cardview.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                holder.expand();
-//            }
-//        });
-        holder.info.setOnClickListener(new View.OnClickListener() {
+        holder.cardview.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 EventFragment eventFragment = new EventFragment();
@@ -64,6 +59,13 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventViewH
                 bundle.putSerializable("event", event);
                 eventFragment.setArguments(bundle);
                 ((MainActivity) context).pushFragmentWithStack(eventFragment, "EventFragment");
+            }
+        });
+
+        holder.coracao.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(context, "Liked", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -79,11 +81,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventViewH
         private TextView nome, hora, local;
         private CardView cardview;
         private ImageView coracao;
-        private LinearLayout info, whoGo, data;
-
-        private boolean b = true;
-        final int animationDuration = 500;
-        private ResizeAnimation animation = null;
+        private LinearLayout info, data;
 
         public EventViewHolder(View itemView) {
             super(itemView);
@@ -95,170 +93,8 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventViewH
             cardview = (CardView) itemView.findViewById(R.id.cardview);
             coracao = (ImageView) itemView.findViewById(R.id.coracao);
             info = (LinearLayout) itemView.findViewById(R.id.infor);
-            whoGo = (LinearLayout) itemView.findViewById(R.id.whoGo);
             data = (LinearLayout) itemView.findViewById(R.id.data);
             nome = (TextView) itemView.findViewById(R.id.nome);
-
-//            hideInfo();
         }
-
-//        private void expand() {
-//            if (b) {
-//                showInfo();
-//                b = false;
-//            } else {
-//                hideInfo();
-//                b = true;
-//            }
-//        }
-//
-//        private void hideInfo() {
-//            int newHeigth = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 300, context.getResources().getDisplayMetrics());
-//            animation = new ResizeAnimation(cardview, newHeigth);
-//            animation.setDuration(animationDuration);
-//            animation.setAnimationListener(new Animation.AnimationListener() {
-//                @Override
-//                public void onAnimationStart(Animation animation) {
-//                    nome.animate().translationY(nome.getHeight() * 2).setDuration(animationDuration);
-//                    coracao.animate().alpha(0.0f).setDuration(300);
-//                    info.animate().alpha(0.0f).setDuration(300);
-//                    data.animate().alpha(0.0f).setDuration(300);
-//                    whoGo.animate().alpha(0.0f).setDuration(300);
-//                }
-//
-//                @Override
-//                public void onAnimationEnd(Animation animation) {
-//                }
-//
-//                @Override
-//                public void onAnimationRepeat(Animation animation) {
-//
-//                }
-//            });
-//            cardview.startAnimation(animation);
-//        }
-//
-//        private void showInfo() {
-//            int newHeigth = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 400, context.getResources().getDisplayMetrics());
-//            animation = new ResizeAnimation(cardview, newHeigth);
-//            animation.setDuration(animationDuration);
-//            animation.setAnimationListener(new Animation.AnimationListener() {
-//                @Override
-//                public void onAnimationStart(Animation animation) {
-//                }
-//
-//                @Override
-//                public void onAnimationEnd(Animation animation) {
-//                    nome.animate().translationY(-nome.getHeight() / 10).setDuration(300);
-//                    coracao.animate().alpha(1.0f).setDuration(animationDuration);
-//                    info.animate().alpha(1.0f).setDuration(animationDuration);
-//                    data.animate().alpha(1.0f).setDuration(animationDuration);
-//                    whoGo.animate().alpha(1.0f).setDuration(animationDuration);
-//                }
-//
-//                @Override
-//                public void onAnimationRepeat(Animation animation) {
-//
-//                }
-//            });
-//            cardview.startAnimation(animation);
-//        }
     }
 }
-
-//region animação cardview
-    /*
-
-        private CardView cardview;
-        private ImageView coracao;
-        private RelativeLayout relativeLayout;
-        private LinearLayout info, whoGo, data;
-        private TextView nome;
-        private boolean b = true;
-        final int animationDuration = 500;
-        private ResizeAnimation animation = null;
-
-        cardview = (CardView) findViewById(R.id.cardview);
-        coracao = (ImageView) findViewById(R.id.coracao);
-        info = (LinearLayout) findViewById(R.id.infor);
-        whoGo = (LinearLayout) findViewById(R.id.whoGo);
-        data = (LinearLayout) findViewById(R.id.data);
-        nome = (TextView) findViewById(R.id.nome);
-        relativeLayout = (RelativeLayout) findViewById(R.id.relative);
-
-        hideInfo();
-
-        cardview.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                expand();
-            }
-        });
-
-    private void expand() {
-        if (b) {
-            showInfo();
-            b = false;
-        } else {
-            hideInfo();
-            b = true;
-        }
-    }
-
-    private void hideInfo() {
-        int newHeigth = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 300, getResources().getDisplayMetrics());
-        animation = new ResizeAnimation(cardview, newHeigth);
-        animation.setDuration(animationDuration);
-        animation.setAnimationListener(new Animation.AnimationListener() {
-            @Override
-            public void onAnimationStart(Animation animation) {
-                nome.animate().translationY(nome.getHeight() * 2).setDuration(animationDuration);
-                coracao.animate().alpha(0.0f).setDuration(300);
-                info.animate().alpha(0.0f).setDuration(300);
-                data.animate().alpha(0.0f).setDuration(300);
-                whoGo.animate().alpha(0.0f).setDuration(300);
-            }
-
-            @Override
-            public void onAnimationEnd(Animation animation) {
-
-            }
-
-            @Override
-            public void onAnimationRepeat(Animation animation) {
-
-            }
-        });
-        cardview.startAnimation(animation);
-    }
-
-    private void showInfo() {
-        int newHeigth = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 400, getResources().getDisplayMetrics());
-
-        animation = new ResizeAnimation(cardview, newHeigth);
-        animation.setDuration(animationDuration);
-        animation.setAnimationListener(new Animation.AnimationListener() {
-            @Override
-            public void onAnimationStart(Animation animation) {
-
-            }
-
-            @Override
-            public void onAnimationEnd(Animation animation) {
-                nome.animate().translationY(-nome.getHeight() / 10).setDuration(300);
-                coracao.animate().alpha(1.0f).setDuration(animationDuration);
-                info.animate().alpha(1.0f).setDuration(animationDuration);
-                data.animate().alpha(1.0f).setDuration(animationDuration);
-                whoGo.animate().alpha(1.0f).setDuration(animationDuration);
-            }
-
-            @Override
-            public void onAnimationRepeat(Animation animation) {
-
-            }
-        });
-        cardview.startAnimation(animation);
-    }
-
-    */
-//endregion
