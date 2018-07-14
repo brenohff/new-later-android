@@ -53,7 +53,6 @@
         android:textColor="@color/white" />
 
     <Button
-        android:id="@+id/aprovar_evento"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="30dp"
@@ -64,7 +63,6 @@
         android:textColor="@color/white" />
 
     <Button
-        android:id="@+id/meu_evento"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="30dp"
