@@ -2,13 +2,21 @@ package later.brenohff.com.later.Fragments;
 
 
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
+import android.graphics.drawable.ShapeDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.getbase.floatingactionbutton.FloatingActionButton;
@@ -56,6 +64,9 @@ public class EventFragment extends Fragment implements View.OnClickListener {
         event_image = (ImageView) view.findViewById(R.id.fragment_event_viewpager);
         event_title = (TextView) view.findViewById(R.id.event_title);
 
+        event_image.getLayoutParams().height = (int) (((MainActivity) context).getWidth() * 0.6);
+        String date[] = event.getDate().split("/");
+
         Picasso.get().load(event.getImage()).into(event_image);
         event_title.setText(event.getTitle());
 
@@ -73,5 +84,23 @@ public class EventFragment extends Fragment implements View.OnClickListener {
                 ((MainActivity) context).pushFragmentWithStack(commentFragment, "CommentFragment");
                 break;
         }
+    }
+
+    private void setColor(ImageView imageView, int color) {
+        Drawable background = imageView.getBackground();
+        if (background instanceof GradientDrawable)
+            ((GradientDrawable) background).setColor(color);
+    }
+
+    private void setColor(LinearLayout imageView, int color) {
+        Drawable background = imageView.getBackground();
+
+        if (background instanceof ShapeDrawable)
+            ((ShapeDrawable) background).getPaint().setColor(color);
+        else if (background instanceof GradientDrawable)
+            ((GradientDrawable) background).setColor(color);
+        else if (background instanceof ColorDrawable)
+            ((ColorDrawable) background).setColor(color);
+
     }
 }

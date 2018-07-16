@@ -15,24 +15,39 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
+
             <!-- IMAGEM E NOME DA FESTA-->
             <ImageView
                 android:id="@+id/fragment_event_viewpager"
                 android:layout_width="match_parent"
-                android:layout_height="250dp"
-                android:minHeight="250dp"
+                android:layout_height="wrap_content"
                 android:scaleType="centerCrop" />
 
-            <TextView
-                android:id="@+id/event_title"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/rounded_bottom"
-                android:fontFamily="@font/muktamahee_light"
-                android:textAlignment="center"
-                android:textAllCaps="true"
-                android:textColor="@color/white"
-                android:textSize="35sp" />
+                android:orientation="vertical">
+
+                <me.grantland.widget.AutofitLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/event_title"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="2dp"
+                        android:layout_marginRight="2dp"
+                        android:fontFamily="@font/muktamahee_light"
+                        android:singleLine="true"
+                        android:textAlignment="center"
+                        android:textAllCaps="true"
+                        android:textColor="@color/white"
+                        android:textSize="35sp" />
+                </me.grantland.widget.AutofitLayout>
+
+            </LinearLayout>
 
         </LinearLayout>
 
@@ -47,21 +62,21 @@
         android:layout_alignParentRight="true"
         app:fab_addButtonColorNormal="@color/floatingButtonColor">
 
-        <com.getbase.floatingactionbutton.FloatingActionButton
-            android:id="@+id/fragment_event_floating_like"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:fab_colorNormal="@color/floatingButtonColor"
-            app:fab_icon="@drawable/instagram"
-            app:fab_title="Curtir" />
+        <!--<com.getbase.floatingactionbutton.FloatingActionButton-->
+        <!--android:id="@+id/fragment_event_floating_like"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--app:fab_colorNormal="@color/floatingButtonColor"-->
+        <!--app:fab_icon="@drawable/instagram"-->
+        <!--app:fab_title="Curtir" />-->
 
-        <com.getbase.floatingactionbutton.FloatingActionButton
-            android:id="@+id/fragment_event_floating_share"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:fab_colorNormal="@color/floatingButtonColor"
-            app:fab_icon="@drawable/twitter"
-            app:fab_title="Compartilhar" />
+        <!--<com.getbase.floatingactionbutton.FloatingActionButton-->
+        <!--android:id="@+id/fragment_event_floating_share"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--app:fab_colorNormal="@color/floatingButtonColor"-->
+        <!--app:fab_icon="@drawable/twitter"-->
+        <!--app:fab_title="Compartilhar" />-->
 
         <com.getbase.floatingactionbutton.FloatingActionButton
             android:id="@+id/fragment_event_floating_coment"
