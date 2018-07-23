@@ -3,13 +3,12 @@ package later.brenohff.com.later.Fragments;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import android.database.Cursor;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,18 +23,15 @@ import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlacePicker;
 import com.rengwuxian.materialedittext.MaterialEditText;
 import com.rey.material.widget.Switch;
-import com.soundcloud.android.crop.Crop;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
-import java.util.Random;
 
 import later.brenohff.com.later.Activities.MainActivity;
 import later.brenohff.com.later.Connections.LTConnection;
@@ -45,6 +41,9 @@ import later.brenohff.com.later.Models.LTCategory;
 import later.brenohff.com.later.Models.LTEvent;
 import later.brenohff.com.later.Others.MonetaryMask;
 import later.brenohff.com.later.R;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -75,7 +74,8 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
     private int PLACE_PICKER_REQUEST = 1;
     private final int SELECT_PHOTO = 2;
 
-    private Uri eventImage = null;
+    private InputStream imageStream;
+    private Uri imageUri;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -176,19 +176,7 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
             displaySelectedPlaceFromPlacePicker(data);
         }
         if (requestCode == SELECT_PHOTO && resultCode == RESULT_OK) {
-            try {
-                final Uri imageUri = data.getData();
-                final InputStream imageStream = getActivity().getContentResolver().openInputStream(imageUri);
-                final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
-                beginCrop(imageUri);
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            }
-        }
-        if (requestCode == Crop.REQUEST_PICK && resultCode == RESULT_OK) {
-            beginCrop(data.getData());
-        } else if (requestCode == Crop.REQUEST_CROP) {
-            handleCrop(resultCode, data);
+            imageUri = data.getData();
         }
     }
 
@@ -314,42 +302,54 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
         ltEvent.setHour(hora_texto.getText().toString());
         ltEvent.setUser(LTMainData.getInstance().getUser());
 
-        Random r = new Random();
-        ltEvent.setImage(categoriesList.get(r.nextInt(categoriesList.size())).getUrl());
+        File originalFile = new File(getPath(imageUri));
 
-        final LTRequests requests = LTConnection.createService(LTRequests.class);
-        Call<Void> call = requests.registerEvent(ltEvent);
+        //parameter
+//        RequestBody event = RequestBody.create(MultipartBody.FORM, ltEvent.toString());
+        RequestBody filePart = RequestBody.create(
+                MediaType.parse("image/*"), originalFile);
+
+        MultipartBody.Part file = MultipartBody.Part.createFormData("upload", originalFile.getName(), filePart);
+
+        LTRequests requests = LTConnection.createService(LTRequests.class);
+        Call<Void> call = requests.teste(ltEvent, file);
         call.enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
                 if (response.isSuccessful()) {
-                    Toast.makeText(context, "Evento inserido com sucesso.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, "Success", Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(context, "Não foi possível inserir evento - " + response.code(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, "Fail", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<Void> call, Throwable t) {
-                Toast.makeText(context, "Erro ao conectar com o servidor.", Toast.LENGTH_SHORT).show();
+                t.printStackTrace();
             }
         });
+
+
+//        LTRequests requests = LTConnection.createService(LTRequests.class);
+//        Call<Void> call = requests.registerEvent(ltEvent);
+//        call.enqueue(new Callback<Void>() {
+//            @Override
+//            public void onResponse(Call<Void> call, Response<Void> response) {
+//                if (response.isSuccessful()) {
+//                    Toast.makeText(context, "Evento inserido com sucesso.", Toast.LENGTH_SHORT).show();
+//                } else {
+//                    Toast.makeText(context, "Não foi possível inserir evento - " + response.code(), Toast.LENGTH_SHORT).show();
+//                }
+//            }
+//
+//            @Override
+//            public void onFailure(Call<Void> call, Throwable t) {
+//                Toast.makeText(context, "Erro ao conectar com o servidor.", Toast.LENGTH_SHORT).show();
+//            }
+//        });
     }
 
     //region IMAGE PICKER
-
-    private void beginCrop(Uri source) {
-        eventImage = Uri.fromFile(new File(context.getCacheDir(), "cropped"));
-        Crop.of(source, eventImage).asSquare().start(context, this);
-    }
-
-    private void handleCrop(int resultCode, Intent result) {
-        if (resultCode == RESULT_OK) {
-            Log.d("CREATEEVENT", "");
-        } else if (resultCode == Crop.RESULT_ERROR) {
-            Toast.makeText(context, Crop.getError(result).getMessage(), Toast.LENGTH_SHORT).show();
-        }
-    }
 
     private void startImagePickerActivity() {
         Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
@@ -430,6 +430,17 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
     //endregion
 
     //region UPLOAD IMAGE
+
+    private String getPath(Uri uri) {
+        String[] filePathColumn = {MediaStore.Images.Media.DATA};
+        Cursor cursor = getActivity().getContentResolver().query(uri, filePathColumn, null, null, null);
+        cursor.moveToFirst();
+        int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+        String filePath = cursor.getString(columnIndex);
+        cursor.close();
+        return filePath;
+    }
+
     //endregion
 
 
