@@ -21,13 +21,13 @@ import com.cunoraz.tagview.Tag;
 import com.cunoraz.tagview.TagView;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlacePicker;
+import com.google.gson.Gson;
 import com.rengwuxian.materialedittext.MaterialEditText;
 import com.rey.material.widget.Switch;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
 
 import java.io.File;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -73,8 +73,6 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
     private Double lat, lon;
     private int PLACE_PICKER_REQUEST = 1;
     private final int SELECT_PHOTO = 2;
-
-    private InputStream imageStream;
     private Uri imageUri;
 
     @Override
@@ -177,6 +175,7 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
         }
         if (requestCode == SELECT_PHOTO && resultCode == RESULT_OK) {
             imageUri = data.getData();
+//            Bitmap bitmap = MediaStore.Images.Media.getBitmap(context.getContentResolver(), imageUri);
         }
     }
 
@@ -302,24 +301,27 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
         ltEvent.setHour(hora_texto.getText().toString());
         ltEvent.setUser(LTMainData.getInstance().getUser());
 
+        //Create file from image path
         File originalFile = new File(getPath(imageUri));
 
-        //parameter
-//        RequestBody event = RequestBody.create(MultipartBody.FORM, ltEvent.toString());
-        RequestBody filePart = RequestBody.create(
-                MediaType.parse("image/*"), originalFile);
+        //Parsing oject to json
+        Gson gson = new Gson();
+        String eventJson = gson.toJson(ltEvent);
 
-        MultipartBody.Part file = MultipartBody.Part.createFormData("upload", originalFile.getName(), filePart);
+        //Create multipart
+        RequestBody eventPart = RequestBody.create(MultipartBody.FORM, eventJson);
+        RequestBody requestBody = RequestBody.create(MediaType.parse("multipart/form-data"), originalFile);
+        MultipartBody.Part body = MultipartBody.Part.createFormData("file", originalFile.getName(), requestBody);
 
         LTRequests requests = LTConnection.createService(LTRequests.class);
-        Call<Void> call = requests.teste(ltEvent, file);
+        Call<Void> call = requests.teste(eventPart, body);
         call.enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
                 if (response.isSuccessful()) {
                     Toast.makeText(context, "Success", Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(context, "Fail", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, response.code() + response.message(), Toast.LENGTH_SHORT).show();
                 }
             }
 
@@ -328,33 +330,15 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
                 t.printStackTrace();
             }
         });
-
-
-//        LTRequests requests = LTConnection.createService(LTRequests.class);
-//        Call<Void> call = requests.registerEvent(ltEvent);
-//        call.enqueue(new Callback<Void>() {
-//            @Override
-//            public void onResponse(Call<Void> call, Response<Void> response) {
-//                if (response.isSuccessful()) {
-//                    Toast.makeText(context, "Evento inserido com sucesso.", Toast.LENGTH_SHORT).show();
-//                } else {
-//                    Toast.makeText(context, "Não foi possível inserir evento - " + response.code(), Toast.LENGTH_SHORT).show();
-//                }
-//            }
-//
-//            @Override
-//            public void onFailure(Call<Void> call, Throwable t) {
-//                Toast.makeText(context, "Erro ao conectar com o servidor.", Toast.LENGTH_SHORT).show();
-//            }
-//        });
     }
 
     //region IMAGE PICKER
 
     private void startImagePickerActivity() {
-        Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
-        photoPickerIntent.setType("image/*");
-        startActivityForResult(photoPickerIntent, SELECT_PHOTO);
+
+        Intent intent = new Intent(Intent.ACTION_PICK);
+        intent.setType("image/*");
+        startActivityForResult(intent, SELECT_PHOTO);
     }
 
     //endregion
@@ -429,8 +413,6 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
 
     //endregion
 
-    //region UPLOAD IMAGE
-
     private String getPath(Uri uri) {
         String[] filePathColumn = {MediaStore.Images.Media.DATA};
         Cursor cursor = getActivity().getContentResolver().query(uri, filePathColumn, null, null, null);
@@ -440,8 +422,6 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
         cursor.close();
         return filePath;
     }
-
-    //endregion
 
 
 }

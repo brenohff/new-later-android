@@ -7,6 +7,7 @@ import later.brenohff.com.later.Models.LTChat;
 import later.brenohff.com.later.Models.LTEvent;
 import later.brenohff.com.later.Models.LTUser;
 import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
@@ -30,7 +31,7 @@ public interface LTRequests {
     @Multipart
     @POST("events/teste")
     Call<Void> teste(
-            @Part("event") LTEvent event,
+            @Part("event") RequestBody event,
             @Part MultipartBody.Part file
     );
 
