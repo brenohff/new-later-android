@@ -64,7 +64,7 @@ public class LTChat implements Serializable {
         return users;
     }
 
-    public void setUser(LTUser user) {
+    public void setUser(LTUser users) {
         this.users = users;
     }
 
