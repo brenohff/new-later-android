@@ -6,7 +6,7 @@ import java.util.List;
 public class LTEvent implements Serializable {
 
     private Long id;
-    private LTUser user;
+    private LTUser users;
     private List<LTCategory> categories;
 
     private String title;
@@ -43,11 +43,11 @@ public class LTEvent implements Serializable {
     }
 
     public LTUser getUser() {
-        return user;
+        return users;
     }
 
-    public void setUser(LTUser user) {
-        this.user = user;
+    public void setUser(LTUser users) {
+        this.users = users;
     }
 
     public String getTitle() {

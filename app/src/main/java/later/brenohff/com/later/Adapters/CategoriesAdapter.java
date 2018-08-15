@@ -37,7 +37,7 @@ public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.Ca
     @Override
     public void onBindViewHolder(@NonNull CategoryViewHolder holder, int position) {
         LTCategory category = ltCategories.get(position);
-        Picasso.get().load(category.getUrl()).into(holder.background);
+        Picasso.get().load(category.getUrl()).resize(400, 400).into(holder.background);
         holder.title.setText(category.getName());
     }
 

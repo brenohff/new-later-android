@@ -10,7 +10,7 @@ public class LTChat implements Serializable {
     private String content;
     private String eventId;
     private Date dtPost;
-    private LTUser user;
+    private LTUser users;
 
     public enum MessageType {
         CHAT,
@@ -61,11 +61,11 @@ public class LTChat implements Serializable {
     }
 
     public LTUser getUser() {
-        return user;
+        return users;
     }
 
     public void setUser(LTUser user) {
-        this.user = user;
+        this.users = users;
     }
 
     //endregion

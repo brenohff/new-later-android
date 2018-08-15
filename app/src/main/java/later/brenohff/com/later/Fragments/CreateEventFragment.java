@@ -192,10 +192,10 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
             descricao_et.setError("Insira uma descrição");
         }
 
-//        if (local_texto.getText().toString().equals("Local")) {
-//            b = false;
-//            local_texto.setError("Insira uma local");
-//        }
+        if (local_texto.getText().toString().equals("Local")) {
+            b = false;
+            local_texto.setError("Insira uma local");
+        }
 
         if (valor_et.getText().toString().isEmpty()) {
             b = false;
@@ -210,6 +210,11 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
         if (hora_texto.getText().toString().equals("Horário")) {
             b = false;
             hora_texto.setError("Escolha um horário!");
+        }
+
+        if(imageUri == null){
+            b = false;
+            Toast.makeText(context, "Insira uma foto.", Toast.LENGTH_SHORT).show();
         }
 
         if (categoriesList.isEmpty()) {
@@ -314,7 +319,7 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
         MultipartBody.Part body = MultipartBody.Part.createFormData("file", originalFile.getName(), requestBody);
 
         LTRequests requests = LTConnection.createService(LTRequests.class);
-        Call<Void> call = requests.teste(eventPart, body);
+        Call<Void> call = requests.registerEvent(eventPart, body);
         call.enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {

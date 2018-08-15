@@ -11,13 +11,18 @@ import retrofit2.converter.gson.GsonConverterFactory;
  */
 
 public class LTConnection {
+
 //    private static final String API_BASE = "http://10.0.2.2:8080/";
-        private static final String API_BASE = "http://192.168.0.22:8080/";
+//    public static final String SOCKET = "ws://10.0.2.2:8080/event/websocket";
+//
 //    private static final String API_BASE = "http://later-backend.herokuapp.com/";
-//    private static final String API_BASE = "http://laterbackend-env.32yuqxfddx.sa-east-1.elasticbeanstalk.com/";
-        public static final String SOCKET = "ws://192.168.0.22:8080/event/websocket";
-//        public static final String SOCKET = "ws://laterbackend-env.32yuqxfddx.sa-east-1.elasticbeanstalk.com/event/websocket";
 //    public static final String SOCKET = "ws://later-backend.herokuapp.com/event/websocket";
+//
+//    private static final String API_BASE = "http://192.168.0.22:8080/";
+//    public static final String SOCKET = "ws://192.168.0.22:8080/event/websocket";
+
+    private static final String API_BASE = "http://142.93.192.165:8080//";
+    public static final String SOCKET = "ws://142.93.192.165:8080//event/websocket";
 
     private static Retrofit builder = new Retrofit.Builder()
             .baseUrl(API_BASE)

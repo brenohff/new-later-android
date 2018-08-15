@@ -25,12 +25,9 @@ public interface LTRequests {
     ////////////////////////////////////////////////////////////////////////////////////////////////////
     ///// EVENTS
     ////////////////////////////////////////////////////////////////////////////////////////////////////
+   @Multipart
     @POST("events/saveEvent")
-    Call<Void> registerEvent(@Body LTEvent event);
-
-    @Multipart
-    @POST("events/teste")
-    Call<Void> teste(
+    Call<Void> registerEvent(
             @Part("event") RequestBody event,
             @Part MultipartBody.Part file
     );
