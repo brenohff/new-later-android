@@ -55,6 +55,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/muktamahee_light"
+                    android:paddingEnd="5dp"
+                    android:paddingStart="5dp"
                     android:textColor="#FFF"
                     android:textSize="30sp" />
             </me.grantland.widget.AutofitLayout>

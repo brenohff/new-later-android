@@ -55,6 +55,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/muktamahee_light"
+                    android:paddingEnd="5dp"
+                    android:paddingStart="5dp"
                     android:textColor="#FFF"
                     android:textSize="30sp" />
             </me.grantland.widget.AutofitLayout>
@@ -75,7 +77,7 @@
                     android:id="@+id/local"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="5dp"
+                    android:layout_marginStart="5dp"
                     android:fontFamily="@font/philosopher_regular"
                     android:gravity="center_vertical"
                     android:minHeight="25dp"
@@ -83,6 +85,8 @@
                     android:textSize="16sp" />
 
             </LinearLayout>
+
+            <!-- TODO ARRUMAR ISSO AQUI: COLOCAR TEXTVIEW COM DRAWABLE_START -->
 
             <LinearLayout
                 android:id="@+id/data"
@@ -100,7 +104,7 @@
                     android:id="@+id/hora"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginLeft="5dp"
+                    android:layout_marginStart="5dp"
                     android:fontFamily="@font/philosopher_regular"
                     android:gravity="center_vertical"
                     android:textColor="#FFF"

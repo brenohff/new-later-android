@@ -54,6 +54,8 @@
                     android:id="@+id/nome"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:paddingEnd="5dp"
+                    android:paddingStart="5dp"
                     android:fontFamily="@font/muktamahee_light"
                     android:textColor="#FFF"
                     android:textSize="22sp" />

@@ -86,21 +86,21 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
     }
 
     private void castFields(View view) {
-        tagView = (TagView) view.findViewById(R.id.tag_group);
-        bt_calendario = (ImageButton) view.findViewById(R.id.fragment_event_register_calendario);
-        bt_hora = (ImageButton) view.findViewById(R.id.fragment_event_register_horario);
-        bt_local = (ImageButton) view.findViewById(R.id.fragment_event_register_localizacao);
-        bt_register = (Button) view.findViewById(R.id.fragment_event_register_register);
-        bt_upload = (Button) view.findViewById(R.id.fragment_event_register_uploadImage);
+        tagView = view.findViewById(R.id.tag_group);
+        bt_calendario = view.findViewById(R.id.fragment_event_register_calendario);
+        bt_hora = view.findViewById(R.id.fragment_event_register_horario);
+        bt_local = view.findViewById(R.id.fragment_event_register_localizacao);
+        bt_register = view.findViewById(R.id.fragment_event_register_register);
+        bt_upload = view.findViewById(R.id.fragment_event_register_uploadImage);
 
-        modo = (Switch) view.findViewById(R.id.fragment_event_register_switch);
+        modo = view.findViewById(R.id.fragment_event_register_switch);
 
-        data_texto = (TextView) view.findViewById(R.id.fragment_event_register_data);
-        hora_texto = (TextView) view.findViewById(R.id.fragment_event_register_hora);
-        local_texto = (TextView) view.findViewById(R.id.fragment_event_register_local);
-        titulo_et = (MaterialEditText) view.findViewById(R.id.fragment_event_register_titulo);
-        descricao_et = (MaterialEditText) view.findViewById(R.id.fragment_event_register_descricao);
-        valor_et = (MaterialEditText) view.findViewById(R.id.fragment_event_register_valor);
+        data_texto = view.findViewById(R.id.fragment_event_register_data);
+        hora_texto = view.findViewById(R.id.fragment_event_register_hora);
+        local_texto = view.findViewById(R.id.fragment_event_register_local);
+        titulo_et = view.findViewById(R.id.fragment_event_register_titulo);
+        descricao_et = view.findViewById(R.id.fragment_event_register_descricao);
+        valor_et = view.findViewById(R.id.fragment_event_register_valor);
 
         monetaryMask = new MonetaryMask(valor_et);
         valor_et.addTextChangedListener(monetaryMask);
@@ -212,7 +212,7 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
             hora_texto.setError("Escolha um horário!");
         }
 
-        if(imageUri == null){
+        if (imageUri == null) {
             b = false;
             Toast.makeText(context, "Insira uma foto.", Toast.LENGTH_SHORT).show();
         }
@@ -233,7 +233,7 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
             public void onResponse(Call<List<LTCategory>> call, Response<List<LTCategory>> response) {
                 if (response.isSuccessful()) {
 
-                    tagList = new ArrayList<Tag>();
+                    tagList = new ArrayList<>();
 
                     List<LTCategory> ltCategories = response.body();
                     for (LTCategory category : ltCategories) {
@@ -267,24 +267,21 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
             }
         }
 
-        tagView.setOnTagClickListener(new TagView.OnTagClickListener() {
-            @Override
-            public void onTagClick(Tag tag, int i) {
-                if (!isChecked[i]) {
-                    isChecked[i] = true;
-                    for (LTCategory category : ltCategories) {
-                        if (tag.text.equals(category.getName().toUpperCase())) {
-                            tagView.getChildAt(i).setBackgroundColor(Color.parseColor(category.getBaseColor()));
-                            categoriesList.add(category);
-                        }
+        tagView.setOnTagClickListener((tag, i) -> {
+            if (!isChecked[i]) {
+                isChecked[i] = true;
+                for (LTCategory category : ltCategories) {
+                    if (tag.text.equals(category.getName().toUpperCase())) {
+                        tagView.getChildAt(i).setBackgroundColor(Color.parseColor(category.getBaseColor()));
+                        categoriesList.add(category);
                     }
-                } else {
-                    isChecked[i] = false;
-                    tagView.getChildAt(i).setBackgroundColor(Color.TRANSPARENT);
-                    for (LTCategory category : ltCategories) {
-                        if (tag.text.equals(category.getName().toUpperCase())) {
-                            categoriesList.remove(category);
-                        }
+                }
+            } else {
+                isChecked[i] = false;
+                tagView.getChildAt(i).setBackgroundColor(Color.TRANSPARENT);
+                for (LTCategory category : ltCategories) {
+                    if (tag.text.equals(category.getName().toUpperCase())) {
+                        categoriesList.remove(category);
                     }
                 }
             }
