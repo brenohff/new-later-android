@@ -38,7 +38,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 /**
- * A simple {@link Fragment} subclass.
+ * Created by breno.franco on 23/08/2018.
  */
 public class LoginFragment extends Fragment {
 

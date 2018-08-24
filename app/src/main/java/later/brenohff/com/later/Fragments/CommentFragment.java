@@ -44,7 +44,7 @@ import ua.naiksoftware.stomp.Stomp;
 import ua.naiksoftware.stomp.client.StompClient;
 
 /**
- * A simple {@link Fragment} subclass.
+ * Created by breno.franco on 23/08/2018.
  */
 public class CommentFragment extends Fragment {
 

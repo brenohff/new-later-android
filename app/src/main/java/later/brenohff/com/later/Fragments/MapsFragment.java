@@ -55,7 +55,7 @@ import retrofit2.Response;
 import static android.content.Context.LOCATION_SERVICE;
 
 /**
- * A simple {@link Fragment} subclass.
+ * Created by breno.franco on 23/08/2018.
  */
 public class MapsFragment extends Fragment implements OnMapReadyCallback, LocationUtil.LocationListenerUtil {
 

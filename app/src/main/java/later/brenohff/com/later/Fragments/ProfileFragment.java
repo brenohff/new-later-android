@@ -32,7 +32,7 @@ import later.brenohff.com.later.R;
 import static android.content.Context.LOCATION_SERVICE;
 
 /**
- * A simple {@link Fragment} subclass.
+ * Created by breno.franco on 23/08/2018.
  */
 public class ProfileFragment extends Fragment implements View.OnClickListener {
 

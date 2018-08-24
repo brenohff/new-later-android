@@ -53,7 +53,7 @@ import retrofit2.Response;
 import static android.app.Activity.RESULT_OK;
 
 /**
- * A simple {@link Fragment} subclass.
+ * Created by breno.franco on 23/08/2018.
  */
 public class CreateEventFragment extends Fragment implements View.OnClickListener {
 
