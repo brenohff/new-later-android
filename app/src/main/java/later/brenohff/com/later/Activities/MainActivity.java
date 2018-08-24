@@ -36,8 +36,10 @@ import later.brenohff.com.later.Connections.LTRequests;
 import later.brenohff.com.later.Fragments.CategoriesFragment;
 import later.brenohff.com.later.Fragments.EventsFragment;
 import later.brenohff.com.later.Fragments.LoginFragment;
+import later.brenohff.com.later.Fragments.MapsFragment;
 import later.brenohff.com.later.Fragments.ProfileFragment;
 import later.brenohff.com.later.Memory.LTMainData;
+import later.brenohff.com.later.Models.LTCategory;
 import later.brenohff.com.later.Models.LTUser;
 import later.brenohff.com.later.Others.SaveUserOnDevice;
 import later.brenohff.com.later.R;
@@ -48,7 +50,6 @@ import retrofit2.Response;
 public class MainActivity extends AppCompatActivity {
 
     private static BottomBar bottomMenu;
-
     boolean doubleBackToExitPressedOnce = false;
 
     @Override
@@ -96,29 +97,26 @@ public class MainActivity extends AppCompatActivity {
         initFB();
         showFBInfo();
 
-        bottomMenu = (BottomBar) findViewById(R.id.bottom_nav_view);
+        bottomMenu = findViewById(R.id.bottom_nav_view);
 
-        bottomMenu.setOnTabSelectListener(new OnTabSelectListener() {
-            @Override
-            public void onTabSelected(int tabId) {
-                switch (tabId){
-                    case R.id.nav_conta:
-                        if (LTMainData.getInstance().getUser() != null) {
-                            changeFragment(new ProfileFragment(), "ProfileFragment");
-                        } else {
-                            changeFragment(new LoginFragment(), "LoginFragment");
-                        }
-                        break;
-                    case R.id.nav_categorias:
-                        changeFragment(new CategoriesFragment(), "CategoriesFragment");
-                        break;
-                    case R.id.nav_eventos:
-                        changeFragment(new EventsFragment(), "EventsFragment");
-                        break;
-                    case R.id.nav_mapa:
-                        showToast("Mapa");
-                        break;
-                }
+        bottomMenu.setOnTabSelectListener(tabId -> {
+            switch (tabId){
+                case R.id.nav_conta:
+                    if (LTMainData.getInstance().getUser() != null) {
+                        changeFragment(new ProfileFragment(), "ProfileFragment");
+                    } else {
+                        changeFragment(new LoginFragment(), "LoginFragment");
+                    }
+                    break;
+                case R.id.nav_categorias:
+                    changeFragment(new CategoriesFragment(), "CategoriesFragment");
+                    break;
+                case R.id.nav_eventos:
+                    changeFragment(new EventsFragment(), "EventsFragment");
+                    break;
+                case R.id.nav_mapa:
+                    changeFragment(new MapsFragment(), "MapsFragment");
+                    break;
             }
         });
 

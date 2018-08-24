@@ -8,6 +8,7 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,6 +33,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 
 import later.brenohff.com.later.Activities.MainActivity;
 import later.brenohff.com.later.Connections.LTConnection;
@@ -76,7 +78,7 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
     private Uri imageUri;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_create_event, container, false);
         context = view.getContext();
 
@@ -350,7 +352,7 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
         PlacePicker.IntentBuilder intentBuilder = new PlacePicker.IntentBuilder();
 
         try {
-            Intent intent = intentBuilder.build(getActivity());
+            Intent intent = intentBuilder.build(Objects.requireNonNull(getActivity()));
             startActivityForResult(intent, PLACE_PICKER_REQUEST);
         } catch (Exception e) {
             e.printStackTrace();

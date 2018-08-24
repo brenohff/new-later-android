@@ -9,6 +9,7 @@ import android.content.pm.PackageManager;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
@@ -46,17 +47,17 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     private AlertDialog alert;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
         context = view.getContext();
 
         locationManager = (LocationManager) context.getSystemService(LOCATION_SERVICE);
 
-        bt_logout = (Button) view.findViewById(R.id.logout);
-        bt_criarEvento = (Button) view.findViewById(R.id.criar_evento);
-        userImage = (CircleImageView) view.findViewById(R.id.profile_fragment_imagem);
-        userName = (TextView) view.findViewById(R.id.profile_fragment_nome);
-        userEmail = (TextView) view.findViewById(R.id.profile_fragment_email);
+        bt_logout = view.findViewById(R.id.logout);
+        bt_criarEvento = view.findViewById(R.id.criar_evento);
+        userImage = view.findViewById(R.id.profile_fragment_imagem);
+        userName = view.findViewById(R.id.profile_fragment_nome);
+        userEmail = view.findViewById(R.id.profile_fragment_email);
 
         if (LTMainData.getInstance().getUser() != null) {
             user = LTMainData.getInstance().getUser();
@@ -122,17 +123,9 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         alertDialogBuilder.setMessage("O GPS está desativado. Deseja ativá-lo?")
                 .setCancelable(false)
                 .setPositiveButton("Ativar GPS",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                startActivityForResult(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS), 1);
-                            }
-                        });
+                        (dialog, id) -> startActivityForResult(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS), 1));
         alertDialogBuilder.setNegativeButton("Cancelar",
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        dialog.cancel();
-                    }
-                });
+                (dialog, id) -> dialog.cancel());
         alert = alertDialogBuilder.create();
         alert.show();
     }
