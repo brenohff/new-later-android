@@ -1,6 +1,7 @@
 package later.brenohff.com.later.Fragments;
 
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -35,6 +36,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 
+import dmax.dialog.SpotsDialog;
 import later.brenohff.com.later.Activities.MainActivity;
 import later.brenohff.com.later.Connections.LTConnection;
 import later.brenohff.com.later.Connections.LTRequests;
@@ -59,23 +61,45 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
 
     private Context context;
 
-    private LTEvent ltEvent;
     private MonetaryMask monetaryMask;
 
-    private Button bt_register, bt_upload;
-    private ImageButton bt_calendario, bt_hora, bt_local;
     private TextView data_texto, hora_texto, local_texto;
     private TagView tagView;
     private List<Tag> tagList;
     private List<LTCategory> categoriesList;
-    private Switch modo;
     private MaterialEditText titulo_et, descricao_et, valor_et;
-    private boolean isPrivate = false;
 
     private Double lat, lon;
     private int PLACE_PICKER_REQUEST = 1;
     private final int SELECT_PHOTO = 2;
     private Uri imageUri;
+
+    private AlertDialog progressDialog;
+
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (progressDialog != null) {
+            progressDialog.dismiss();
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (progressDialog != null) {
+            progressDialog.dismiss();
+        }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (progressDialog != null) {
+            progressDialog.dismiss();
+        }
+    }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -89,13 +113,13 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
 
     private void castFields(View view) {
         tagView = view.findViewById(R.id.tag_group);
-        bt_calendario = view.findViewById(R.id.fragment_event_register_calendario);
-        bt_hora = view.findViewById(R.id.fragment_event_register_horario);
-        bt_local = view.findViewById(R.id.fragment_event_register_localizacao);
-        bt_register = view.findViewById(R.id.fragment_event_register_register);
-        bt_upload = view.findViewById(R.id.fragment_event_register_uploadImage);
+        ImageButton bt_calendario = view.findViewById(R.id.fragment_event_register_calendario);
+        ImageButton bt_hora = view.findViewById(R.id.fragment_event_register_horario);
+        ImageButton bt_local = view.findViewById(R.id.fragment_event_register_localizacao);
+        Button bt_register = view.findViewById(R.id.fragment_event_register_register);
+        Button bt_upload = view.findViewById(R.id.fragment_event_register_uploadImage);
 
-        modo = view.findViewById(R.id.fragment_event_register_switch);
+        Switch modo = view.findViewById(R.id.fragment_event_register_switch);
 
         data_texto = view.findViewById(R.id.fragment_event_register_data);
         hora_texto = view.findViewById(R.id.fragment_event_register_hora);
@@ -108,7 +132,7 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
         valor_et.addTextChangedListener(monetaryMask);
 
 
-        /**
+        /*
          * OnClickListener
          */
         modo.setOnClickListener(this);
@@ -121,7 +145,7 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
         bt_hora.setOnClickListener(this);
         bt_local.setOnClickListener(this);
 
-        /**
+        /*
          * Chamada de métodos.
          */
         getCategories();
@@ -232,13 +256,13 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
         Call<List<LTCategory>> call = requests.getCategories();
         call.enqueue(new Callback<List<LTCategory>>() {
             @Override
-            public void onResponse(Call<List<LTCategory>> call, Response<List<LTCategory>> response) {
+            public void onResponse(@NonNull Call<List<LTCategory>> call, @NonNull Response<List<LTCategory>> response) {
                 if (response.isSuccessful()) {
 
                     tagList = new ArrayList<>();
 
                     List<LTCategory> ltCategories = response.body();
-                    for (LTCategory category : ltCategories) {
+                    for (LTCategory category : Objects.requireNonNull(ltCategories)) {
                         Tag tag = new Tag(category.getName().toUpperCase());
                         tagList.add(tag);
                     }
@@ -251,7 +275,7 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
             }
 
             @Override
-            public void onFailure(Call<List<LTCategory>> call, Throwable t) {
+            public void onFailure(@NonNull Call<List<LTCategory>> call, @NonNull Throwable t) {
                 Toast.makeText(context, "Não foi possível conectar ao servidor.", Toast.LENGTH_SHORT).show();
             }
         });
@@ -291,10 +315,10 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
     }
 
     private void saveEvent() {
-        ltEvent = new LTEvent();
+        LTEvent ltEvent = new LTEvent();
         ltEvent.setCategories(categoriesList);
         ltEvent.setStatus("avaliacao");
-        ltEvent.setPrivate(isPrivate);
+        ltEvent.setPrivate(false);
         ltEvent.setLat(lat);
         ltEvent.setLon(lon);
         ltEvent.setTitle(titulo_et.getText().toString());
@@ -317,20 +341,30 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
         RequestBody requestBody = RequestBody.create(MediaType.parse("multipart/form-data"), originalFile);
         MultipartBody.Part body = MultipartBody.Part.createFormData("file", originalFile.getName(), requestBody);
 
+        progressDialog = new SpotsDialog.Builder()
+                .setContext(context)
+                .setMessage("Registrando evento")
+                .setCancelable(false)
+                .build();
+        progressDialog.show();
+
         LTRequests requests = LTConnection.createService(LTRequests.class);
         Call<Void> call = requests.registerEvent(eventPart, body);
         call.enqueue(new Callback<Void>() {
             @Override
-            public void onResponse(Call<Void> call, Response<Void> response) {
+            public void onResponse(@NonNull Call<Void> call, @NonNull Response<Void> response) {
                 if (response.isSuccessful()) {
-                    Toast.makeText(context, "Success", Toast.LENGTH_SHORT).show();
+                    progressDialog.dismiss();
+                    Toast.makeText(context, "Evento criado com sucesso.", Toast.LENGTH_SHORT).show();
                 } else {
+                    progressDialog.dismiss();
                     Toast.makeText(context, response.code() + response.message(), Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
-            public void onFailure(Call<Void> call, Throwable t) {
+            public void onFailure(@NonNull Call<Void> call, @NonNull Throwable t) {
+                progressDialog.dismiss();
                 t.printStackTrace();
             }
         });
@@ -374,15 +408,10 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
     private void datePicker() {
         Calendar now = Calendar.getInstance();
         DatePickerDialog dpd = DatePickerDialog.newInstance(
-                new DatePickerDialog.OnDateSetListener() {
-                    @Override
-                    public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
-                        data_texto.setText(String.format(Locale.getDefault(), "%s/%s/%s",
-                                (dayOfMonth < 10) ? "0" + Integer.toString(dayOfMonth) : Integer.toString(dayOfMonth),
-                                (monthOfYear + 1 < 10) ? "0" + Integer.toString(monthOfYear + 1) : Integer.toString(monthOfYear + 1),
-                                year));
-                    }
-                },
+                (view, year, monthOfYear, dayOfMonth) -> data_texto.setText(String.format(Locale.getDefault(), "%s/%s/%s",
+                        (dayOfMonth < 10) ? "0" + Integer.toString(dayOfMonth) : Integer.toString(dayOfMonth),
+                        (monthOfYear + 1 < 10) ? "0" + Integer.toString(monthOfYear + 1) : Integer.toString(monthOfYear + 1),
+                        year)),
                 now.get(Calendar.YEAR),
                 now.get(Calendar.MONTH),
                 now.get(Calendar.DAY_OF_MONTH)
@@ -390,28 +419,23 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
         dpd.setVersion(DatePickerDialog.Version.VERSION_1);
         dpd.setAccentColor(context.getResources().getColor(R.color.floatingButtonColor));
         dpd.setMinDate(now);
-        dpd.show(((MainActivity) getContext()).getFragmentManager(), "");
+        dpd.show(((MainActivity) Objects.requireNonNull(getContext())).getFragmentManager(), "");
     }
 
     private void timePicker() {
         Calendar now = Calendar.getInstance();
 
         TimePickerDialog tpd = TimePickerDialog.newInstance(
-                new TimePickerDialog.OnTimeSetListener() {
-                    @Override
-                    public void onTimeSet(TimePickerDialog view, int hourOfDay, int minute, int second) {
-                        hora_texto.setText(String.format(Locale.getDefault(), "%s:%s",
-                                (hourOfDay < 10) ? "0" + Integer.toString(hourOfDay) : Integer.toString(hourOfDay),
-                                (minute < 10) ? "0" + Integer.toString(minute) : Integer.toString(minute)));
-                    }
-                },
+                (view, hourOfDay, minute, second) -> hora_texto.setText(String.format(Locale.getDefault(), "%s:%s",
+                        (hourOfDay < 10) ? "0" + Integer.toString(hourOfDay) : Integer.toString(hourOfDay),
+                        (minute < 10) ? "0" + Integer.toString(minute) : Integer.toString(minute))),
                 now.getTime().getHours(),
                 now.getTime().getMinutes(),
                 now.getTime().getSeconds(),
                 false
         );
         tpd.setAccentColor(context.getResources().getColor(R.color.floatingButtonColor));
-        tpd.show(((MainActivity) getContext()).getFragmentManager(), "");
+        tpd.show(((MainActivity) Objects.requireNonNull(getContext())).getFragmentManager(), "");
 
     }
 
@@ -419,8 +443,8 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
 
     private String getPath(Uri uri) {
         String[] filePathColumn = {MediaStore.Images.Media.DATA};
-        Cursor cursor = getActivity().getContentResolver().query(uri, filePathColumn, null, null, null);
-        cursor.moveToFirst();
+        Cursor cursor = Objects.requireNonNull(getActivity()).getContentResolver().query(uri, filePathColumn, null, null, null);
+        Objects.requireNonNull(cursor).moveToFirst();
         int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
         String filePath = cursor.getString(columnIndex);
         cursor.close();
