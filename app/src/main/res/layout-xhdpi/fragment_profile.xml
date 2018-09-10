@@ -9,19 +9,19 @@
 
 
     <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/profile_fragment_imagem"
+        android:id="@+id/profile_fragment_image"
         android:layout_width="125dp"
         android:layout_height="125dp"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="20dp"
         android:layout_marginBottom="10dp"
+        android:layout_marginTop="20dp"
         android:background="@drawable/user"
         android:scaleType="centerCrop"
         app:civ_border_color="@color/white"
         app:civ_border_width="1dp" />
 
     <TextView
-        android:id="@+id/profile_fragment_nome"
+        android:id="@+id/profile_fragment_name"
         android:layout_width="wrap_content"
         android:layout_height="35dp"
         android:layout_gravity="center_horizontal"
@@ -34,8 +34,8 @@
         android:id="@+id/profile_fragment_email"
         android:layout_width="wrap_content"
         android:layout_height="35dp"
-        android:layout_marginTop="-10dp"
         android:layout_gravity="center_horizontal"
+        android:layout_marginTop="-10dp"
         android:gravity="center"
 
         android:textAlignment="center"
@@ -43,7 +43,7 @@
         android:textSize="16sp" />
 
     <Button
-        android:id="@+id/criar_evento"
+        android:id="@+id/profile_fragment_create_event"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="30dp"
@@ -51,7 +51,7 @@
         android:layout_marginTop="35dp"
         android:background="@color/floatingButtonColor"
 
-        android:text="CRIAR EVENTO"
+        android:text="@string/bt_profile_create_event"
         android:textColor="@color/white" />
 
     <Button
@@ -61,10 +61,11 @@
         android:layout_marginRight="30dp"
         android:layout_marginTop="10dp"
         android:background="@color/floatingButtonColor"
-        android:text="APROVAR EVENTOS"
+        android:text="@string/bt_profile_approve_events"
         android:textColor="@color/white" />
 
     <Button
+        android:id="@+id/profile_fragment_my_events"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="30dp"
@@ -72,11 +73,11 @@
         android:layout_marginTop="10dp"
         android:background="@color/floatingButtonColor"
 
-        android:text="Meus eventos"
+        android:text="@string/bt_profile_my_events"
         android:textColor="@color/white" />
 
     <Button
-        android:id="@+id/logout"
+        android:id="@+id/profile_fragment_logout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="30dp"
@@ -84,7 +85,7 @@
         android:layout_marginTop="10dp"
         android:background="@color/floatingButtonColor"
 
-        android:text="SAIR"
+        android:text="@string/bt_profile_logout"
         android:textColor="@color/white" />
 
 </LinearLayout>

@@ -1,19 +1,18 @@
 package later.brenohff.com.later.Activities;
 
+import android.app.AlertDialog;
+import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.Signature;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.annotation.NonNull;
-import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Base64;
 import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -21,31 +20,23 @@ import android.widget.Toast;
 
 import com.facebook.AccessToken;
 import com.facebook.FacebookSdk;
-import com.facebook.Profile;
 import com.facebook.appevents.AppEventsLogger;
 import com.facebook.login.LoginManager;
 import com.roughike.bottombar.BottomBar;
-import com.roughike.bottombar.OnTabSelectListener;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Objects;
 
-import later.brenohff.com.later.Connections.LTConnection;
-import later.brenohff.com.later.Connections.LTRequests;
+import dmax.dialog.SpotsDialog;
 import later.brenohff.com.later.Fragments.CategoriesFragment;
 import later.brenohff.com.later.Fragments.EventsFragment;
 import later.brenohff.com.later.Fragments.LoginFragment;
 import later.brenohff.com.later.Fragments.MapsFragment;
 import later.brenohff.com.later.Fragments.ProfileFragment;
 import later.brenohff.com.later.Memory.LTMainData;
-import later.brenohff.com.later.Models.LTCategory;
-import later.brenohff.com.later.Models.LTUser;
 import later.brenohff.com.later.Others.SaveUserOnDevice;
 import later.brenohff.com.later.R;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -100,7 +91,7 @@ public class MainActivity extends AppCompatActivity {
         bottomMenu = findViewById(R.id.bottom_nav_view);
 
         bottomMenu.setOnTabSelectListener(tabId -> {
-            switch (tabId){
+            switch (tabId) {
                 case R.id.nav_conta:
                     if (LTMainData.getInstance().getUser() != null) {
                         changeFragment(new ProfileFragment(), "ProfileFragment");
@@ -145,10 +136,10 @@ public class MainActivity extends AppCompatActivity {
 
     public void pushFragmentWithStack(Fragment fragment, String tag) {
         this.getSupportFragmentManager().beginTransaction()
-        .setCustomAnimations(R.animator.fragment_slide_left_enter,
-            R.animator.fragment_slide_left_exit,
-            R.animator.fragment_slide_right_enter,
-            R.animator.fragment_slide_right_exit)
+                .setCustomAnimations(R.animator.fragment_slide_left_enter,
+                        R.animator.fragment_slide_left_exit,
+                        R.animator.fragment_slide_right_enter,
+                        R.animator.fragment_slide_right_exit)
                 .replace(R.id.main_container, fragment, tag)
                 .addToBackStack(tag)
                 .commit();
@@ -156,10 +147,10 @@ public class MainActivity extends AppCompatActivity {
 
     public void pushFragmentWithNoStack(Fragment fragment, String tag) {
         this.getSupportFragmentManager().beginTransaction()
-        .setCustomAnimations(R.animator.fragment_slide_left_enter,
-            R.animator.fragment_slide_left_exit,
-            R.animator.fragment_slide_right_enter,
-            R.animator.fragment_slide_right_exit)
+                .setCustomAnimations(R.animator.fragment_slide_left_enter,
+                        R.animator.fragment_slide_left_exit,
+                        R.animator.fragment_slide_right_enter,
+                        R.animator.fragment_slide_right_exit)
                 .replace(R.id.main_container, fragment, tag)
                 .commit();
     }
@@ -242,6 +233,17 @@ public class MainActivity extends AppCompatActivity {
 
         return width;
 
+    }
+
+    public AlertDialog alertDialog(AlertDialog alertDialog, Context context, String message) {
+        alertDialog = new SpotsDialog.Builder()
+                .setContext(context)
+                .setMessage(message)
+                .setCancelable(false)
+                .build();
+        alertDialog.show();
+
+        return alertDialog;
     }
 
 }

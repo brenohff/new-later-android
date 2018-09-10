@@ -29,8 +29,7 @@ public interface LTRequests {
     @POST("events/saveEvent")
     Call<Void> registerEvent(
             @Part("event") RequestBody event,
-            @Part MultipartBody.Part file
-    );
+            @Part MultipartBody.Part file);
 
     @GET("events/getEventsByUser")
     Call<List<LTEvent>> getEventsByUser(@Query("user_id") String user_id);

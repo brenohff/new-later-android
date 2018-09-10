@@ -1,13 +1,21 @@
 <resources>
     <string name="app_name">Later</string>
 
+    <!-- API'S -->
     <string name="facebook_app_id">359834571163121</string>
     <string name="fb_login_protocol_scheme">fb359834571163121</string>
+
+    <!-- EVENT FRAGMENT -->
     <string name="event_place">Localização</string>
     <string name="categories">Categorias</string>
     <string name="event_user">Organizador</string>
     <string name="event_description">Descrição</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
+    <!-- PROFILE FRAGMENT -->
+    <string name="bt_profile_my_events">MEUS EVENTOS</string>
+    <string name="bt_profile_logout">SAIR</string>
+    <string name="bt_profile_approve_events">APROVAR EVENTOS</string>
+    <string name="bt_profile_create_event">CRIAR EVENTO</string>
+    <string name="event_not_found">Pooooxa, você ainda não criou nenhuma festa =/</string>
 
 </resources>

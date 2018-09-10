@@ -3,7 +3,6 @@ package later.brenohff.com.later.Fragments;
 
 import android.Manifest;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.LocationManager;
@@ -39,7 +38,6 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     private Context context;
     private LTUser user;
 
-    private Button bt_logout, bt_criarEvento;
     private CircleImageView userImage;
     private TextView userName, userEmail;
 
@@ -53,17 +51,19 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
 
         locationManager = (LocationManager) context.getSystemService(LOCATION_SERVICE);
 
-        bt_logout = view.findViewById(R.id.logout);
-        bt_criarEvento = view.findViewById(R.id.criar_evento);
-        userImage = view.findViewById(R.id.profile_fragment_imagem);
-        userName = view.findViewById(R.id.profile_fragment_nome);
+        userImage = view.findViewById(R.id.profile_fragment_image);
+        userName = view.findViewById(R.id.profile_fragment_name);
         userEmail = view.findViewById(R.id.profile_fragment_email);
+        Button bt_logout = view.findViewById(R.id.profile_fragment_logout);
+        Button bt_criarEvento = view.findViewById(R.id.profile_fragment_create_event);
+        Button bt_my_events = view.findViewById(R.id.profile_fragment_my_events);
 
         if (LTMainData.getInstance().getUser() != null) {
             user = LTMainData.getInstance().getUser();
             setUserInfo();
         }
 
+        bt_my_events.setOnClickListener(this);
         bt_logout.setOnClickListener(this);
         bt_criarEvento.setOnClickListener(this);
 
@@ -73,21 +73,23 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.logout:
+            case R.id.profile_fragment_logout:
                 LoginManager.getInstance().logOut();
                 LTMainData.getInstance().setUser(null);
                 SaveUserOnDevice.removeSavedUser(context);
                 ((MainActivity) context).pushFragmentWithNoStack(new LoginFragment(), "LoginFragment");
                 break;
-            case R.id.criar_evento:
+            case R.id.profile_fragment_create_event:
                 requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
                 break;
-
+            case R.id.profile_fragment_my_events:
+                ((MainActivity) context).pushFragmentWithStack(new MyEventsFragment(), "MyEventsFragment");
+                break;
         }
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[], @NonNull int[] grantResults) {
         switch (requestCode) {
             case 1: {
                 if (grantResults.length > 0
