@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +16,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.List;
+import java.util.Objects;
 
 import later.brenohff.com.later.Activities.MainActivity;
 import later.brenohff.com.later.Adapters.MyEventsAdapter;
@@ -36,7 +38,6 @@ public class MyEventsFragment extends Fragment {
     private Context context;
 
     private AlertDialog alertDialog;
-    private LinearLayoutManager layoutManager;
     private RecyclerView recyclerView;
     private TextView not_found_message;
 
@@ -77,7 +78,7 @@ public class MyEventsFragment extends Fragment {
             @Override
             public void onResponse(@NonNull Call<List<LTEvent>> call, @NonNull Response<List<LTEvent>> response) {
                 if (response.isSuccessful()) {
-                    inflateRecyclerView(response.body());
+                    inflateRecyclerView(Objects.requireNonNull(response.body()));
                     alertDialog.dismiss();
                 } else {
                     Toast.makeText(context, "Erro ao buscar eventos.", Toast.LENGTH_SHORT).show();
@@ -97,15 +98,43 @@ public class MyEventsFragment extends Fragment {
     private void inflateRecyclerView(List<LTEvent> eventList) {
         if (eventList.size() > 0) {
             recyclerView.setHasFixedSize(true);
-            layoutManager = new LinearLayoutManager(getContext());
+            LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
             recyclerView.setLayoutManager(layoutManager);
             ItemClickSupport.addTo(recyclerView).setOnItemClickListener((recyclerView, position, v) ->
-                    Toast.makeText(context, eventList.get(position).getId().toString(), Toast.LENGTH_SHORT).show());
+                    showFilterPopup(v, eventList.get(position)));
             recyclerView.setAdapter(new MyEventsAdapter(eventList));
         } else {
             recyclerView.setVisibility(View.GONE);
             not_found_message.setVisibility(View.VISIBLE);
         }
+    }
+
+
+    private void showFilterPopup(View v, LTEvent event) {
+        PopupMenu popup = new PopupMenu(context, v);
+        popup.getMenuInflater().inflate(R.menu.popup_filter, popup.getMenu());
+        popup.setOnMenuItemClickListener(item -> {
+            switch (item.getItemId()) {
+                case R.id.popup_view:
+                    EventFragment eventFragment = new EventFragment();
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable("event", event);
+                    eventFragment.setArguments(bundle);
+                    ((MainActivity) context).pushFragmentWithStack(eventFragment, "EventFragment");
+                    return true;
+
+                case R.id.popup_edit:
+                    return true;
+
+                case R.id.popup_delete:
+                    return true;
+
+                default:
+                    return false;
+            }
+        });
+
+        popup.show();
     }
 
 }

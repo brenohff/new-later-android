@@ -3,6 +3,7 @@ package later.brenohff.com.later.Fragments;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -12,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import java.util.List;
+import java.util.Objects;
 
 import later.brenohff.com.later.Adapters.CategoriesAdapter;
 import later.brenohff.com.later.Connections.LTConnection;
@@ -28,11 +30,10 @@ public class CategoriesFragment extends Fragment {
     private Context context;
 
     private RecyclerView recyclerView;
-    private RecyclerView.LayoutManager layoutManager;
     private Parcelable recyclerViewState;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_categories, container, false);
         context = view.getContext();
 
@@ -43,7 +44,7 @@ public class CategoriesFragment extends Fragment {
 
     private void castFields(View view) {
         recyclerView = view.findViewById(R.id.categories_recyclerview);
-        layoutManager = new LinearLayoutManager(getContext());
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(layoutManager);
 
         getCategories();
@@ -54,11 +55,11 @@ public class CategoriesFragment extends Fragment {
         Call<List<LTCategory>> call = requests.getCategories();
         call.enqueue(new Callback<List<LTCategory>>() {
             @Override
-            public void onResponse(Call<List<LTCategory>> call, Response<List<LTCategory>> response) {
+            public void onResponse(@NonNull Call<List<LTCategory>> call, @NonNull Response<List<LTCategory>> response) {
                 if (response.isSuccessful()) {
                     List<LTCategory> ltCategories = response.body();
                     recyclerViewState = recyclerView.getLayoutManager().onSaveInstanceState();
-                    mountRecycler(ltCategories);
+                    mountRecycler(Objects.requireNonNull(ltCategories));
 
                 } else {
                     Toast.makeText(context, response.message(), Toast.LENGTH_SHORT).show();
@@ -66,7 +67,7 @@ public class CategoriesFragment extends Fragment {
             }
 
             @Override
-            public void onFailure(Call<List<LTCategory>> call, Throwable t) {
+            public void onFailure(@NonNull Call<List<LTCategory>> call, @NonNull Throwable t) {
                 Toast.makeText(context, "Não foi possível conectar ao servidor.", Toast.LENGTH_SHORT).show();
             }
         });
@@ -76,14 +77,9 @@ public class CategoriesFragment extends Fragment {
         if (!ltCategories.isEmpty()) {
             recyclerView.getLayoutManager().onRestoreInstanceState(recyclerViewState);
             recyclerView.setHasFixedSize(true);
-            ItemClickSupport.addTo(recyclerView).setOnItemClickListener(new ItemClickSupport.OnItemClickListener() {
-                @Override
-                public void onItemClicked(RecyclerView recyclerView, int position, View v) {
-                    Toast.makeText(context, ltCategories.get(position).getName(), Toast.LENGTH_SHORT).show();
-                }
-            });
+            ItemClickSupport.addTo(recyclerView).setOnItemClickListener((recyclerView, position, v) ->
+                    Toast.makeText(context, ltCategories.get(position).getName(), Toast.LENGTH_SHORT).show());
             recyclerView.setAdapter(new CategoriesAdapter(ltCategories));
         }
     }
-
 }

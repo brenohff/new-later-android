@@ -17,5 +17,8 @@
     <string name="bt_profile_approve_events">APROVAR EVENTOS</string>
     <string name="bt_profile_create_event">CRIAR EVENTO</string>
     <string name="event_not_found">Pooooxa, você ainda não criou nenhuma festa =/</string>
+    <string name="popup_view">Visualizar</string>
+    <string name="popup_edit">Editar</string>
+    <string name="popup_delete">Deletar</string>
 
 </resources>

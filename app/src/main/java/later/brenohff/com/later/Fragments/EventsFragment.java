@@ -1,7 +1,10 @@
 package later.brenohff.com.later.Fragments;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -12,6 +15,7 @@ import android.widget.Toast;
 
 import java.util.List;
 
+import later.brenohff.com.later.Activities.MainActivity;
 import later.brenohff.com.later.Adapters.EventsAdapter;
 import later.brenohff.com.later.Connections.LTConnection;
 import later.brenohff.com.later.Connections.LTRequests;
@@ -26,9 +30,26 @@ public class EventsFragment extends Fragment {
     private Context context;
 
     private RecyclerView recyclerView;
+    private AlertDialog alertDialog;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public void onStop() {
+        super.onStop();
+        if (alertDialog.isShowing()) {
+            alertDialog.dismiss();
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (alertDialog.isShowing()) {
+            alertDialog.dismiss();
+        }
+    }
+
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_events, container, false);
         context = view.getContext();
 
@@ -38,8 +59,9 @@ public class EventsFragment extends Fragment {
     }
 
     private void castFields(View view) {
-        recyclerView = (RecyclerView) view.findViewById(R.id.events_recyclerView);
+        recyclerView = view.findViewById(R.id.events_recyclerView);
 
+        alertDialog = ((MainActivity) context).alertDialog(alertDialog, context, "Buscando eventos...");
         getEvents();
     }
 
@@ -48,18 +70,19 @@ public class EventsFragment extends Fragment {
         Call<List<LTEvent>> call = requests.getPublic();
         call.enqueue(new Callback<List<LTEvent>>() {
             @Override
-            public void onResponse(Call<List<LTEvent>> call, Response<List<LTEvent>> response) {
+            public void onResponse(@NonNull Call<List<LTEvent>> call, @NonNull Response<List<LTEvent>> response) {
                 if (response.isSuccessful()) {
-                    List<LTEvent> ltEvents = response.body();
-                    mountRecycler(ltEvents);
+                    mountRecycler(response.body());
                 } else {
                     Toast.makeText(context, response.message(), Toast.LENGTH_SHORT).show();
+                    alertDialog.dismiss();
                 }
             }
 
             @Override
-            public void onFailure(Call<List<LTEvent>> call, Throwable t) {
+            public void onFailure(@NonNull Call<List<LTEvent>> call, @NonNull Throwable t) {
                 Toast.makeText(context, "Não foi possível conectar ao servidor.", Toast.LENGTH_SHORT).show();
+                alertDialog.dismiss();
             }
         });
 
@@ -69,5 +92,7 @@ public class EventsFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
         recyclerView.setHasFixedSize(true);
         recyclerView.setAdapter(new EventsAdapter(ltEvents));
+
+        (new Handler()).postDelayed(() -> alertDialog.dismiss(), 2000);
     }
 }
