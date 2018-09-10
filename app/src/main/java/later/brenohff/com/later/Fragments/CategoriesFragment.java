@@ -42,7 +42,7 @@ public class CategoriesFragment extends Fragment {
     }
 
     private void castFields(View view) {
-        recyclerView = (RecyclerView) view.findViewById(R.id.categories_recyclerview);
+        recyclerView = view.findViewById(R.id.categories_recyclerview);
         layoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(layoutManager);
 
