@@ -22,6 +22,7 @@ import later.brenohff.com.later.Activities.MainActivity;
 import later.brenohff.com.later.Adapters.MyEventsAdapter;
 import later.brenohff.com.later.Connections.LTConnection;
 import later.brenohff.com.later.Connections.LTRequests;
+import later.brenohff.com.later.Enums.EventStatus;
 import later.brenohff.com.later.Memory.LTMainData;
 import later.brenohff.com.later.Models.LTEvent;
 import later.brenohff.com.later.Others.ItemClickSupport;
@@ -65,7 +66,7 @@ public class MyEventsFragment extends Fragment {
         recyclerView = view.findViewById(R.id.my_events_recyclerView);
         not_found_message = view.findViewById(R.id.my_events_not_found);
 
-        alertDialog = ((MainActivity) context).alertDialog(alertDialog, context, "Buscando eventos...");
+        alertDialog = ((MainActivity) context).alertDialog(context, "Buscando eventos...");
         getMyEvents();
 
         return view;
@@ -109,7 +110,6 @@ public class MyEventsFragment extends Fragment {
         }
     }
 
-
     private void showFilterPopup(View v, LTEvent event) {
         PopupMenu popup = new PopupMenu(context, v);
         popup.getMenuInflater().inflate(R.menu.popup_filter, popup.getMenu());
@@ -124,9 +124,15 @@ public class MyEventsFragment extends Fragment {
                     return true;
 
                 case R.id.popup_edit:
+                    EditEventFragment editEventFragment= new EditEventFragment();
+                    Bundle editBundle = new Bundle();
+                    editBundle.putSerializable("event", event);
+                    editEventFragment.setArguments(editBundle);
+                    ((MainActivity) context).pushFragmentWithStack(editEventFragment, "EditEventFragment");
                     return true;
 
                 case R.id.popup_delete:
+                    deleteEvent();
                     return true;
 
                 default:
@@ -135,6 +141,31 @@ public class MyEventsFragment extends Fragment {
         });
 
         popup.show();
+    }
+
+    private void deleteEvent() {
+        alertDialog = ((MainActivity) context).alertDialog(context, "Cancelando evento...");
+
+        LTRequests requests = LTConnection.createService(LTRequests.class);
+        Call<Void> call = requests.changeEventStatus(EventStatus.CANCELADO);
+        call.enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(@NonNull Call<Void> call, @NonNull Response<Void> response) {
+                if (response.isSuccessful()) {
+                    Toast.makeText(context, "Evento cancelado com sucesso", Toast.LENGTH_SHORT).show();
+                    alertDialog.dismiss();
+                } else {
+                    Toast.makeText(context, "Erro ao cancelar evento.", Toast.LENGTH_SHORT).show();
+                    alertDialog.dismiss();
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<Void> call, @NonNull Throwable t) {
+                Toast.makeText(context, "Falha ao cancelar evento.", Toast.LENGTH_SHORT).show();
+                alertDialog.dismiss();
+            }
+        });
     }
 
 }

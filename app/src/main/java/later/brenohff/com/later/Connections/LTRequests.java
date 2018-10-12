@@ -2,6 +2,7 @@ package later.brenohff.com.later.Connections;
 
 import java.util.List;
 
+import later.brenohff.com.later.Enums.EventStatus;
 import later.brenohff.com.later.Models.LTCategory;
 import later.brenohff.com.later.Models.LTChat;
 import later.brenohff.com.later.Models.LTEvent;
@@ -13,6 +14,7 @@ import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
+import retrofit2.http.PUT;
 import retrofit2.http.Part;
 import retrofit2.http.Query;
 
@@ -25,7 +27,7 @@ public interface LTRequests {
     ////////////////////////////////////////////////////////////////////////////////////////////////////
     ///// EVENTS
     ////////////////////////////////////////////////////////////////////////////////////////////////////
-   @Multipart
+    @Multipart
     @POST("events/saveEvent")
     Call<Void> registerEvent(
             @Part("event") RequestBody event,
@@ -36,6 +38,12 @@ public interface LTRequests {
 
     @GET("events/getPublic")
     Call<List<LTEvent>> getPublic();
+
+    @GET("events/changeEventStatus")
+    Call<Void> changeEventStatus(@Query("event_status") EventStatus eventStatus);
+
+    @PUT("events/updateEventWithoutImage")
+    Call<Void> updateEventWithoutImage(@Body LTEvent event);
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////
     ///// USERS

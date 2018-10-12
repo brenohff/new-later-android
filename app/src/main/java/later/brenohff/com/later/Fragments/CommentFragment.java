@@ -33,6 +33,7 @@ import later.brenohff.com.later.Activities.MainActivity;
 import later.brenohff.com.later.Adapters.CommentAdapter;
 import later.brenohff.com.later.Connections.LTConnection;
 import later.brenohff.com.later.Connections.LTRequests;
+import later.brenohff.com.later.Enums.MessageType;
 import later.brenohff.com.later.Memory.LTMainData;
 import later.brenohff.com.later.Models.LTChat;
 import later.brenohff.com.later.Models.LTEvent;
@@ -184,7 +185,7 @@ public class CommentFragment extends Fragment {
         if (mStompClient != null) {
             LTChat chat = new LTChat();
             chat.setUser(LTMainData.getInstance().getUser());
-            chat.setType(LTChat.MessageType.CHAT);
+            chat.setType(MessageType.CHAT);
             chat.setContent(etMessage.getText().toString());
             chat.setEventId(event.getId().toString());
 

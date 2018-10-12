@@ -20,4 +20,10 @@
         <item name="sw_interpolator">@android:anim/decelerate_interpolator</item>
     </style>
 
+    <style name="AlertDialogStyle" parent="android:Theme.DeviceDefault.Dialog">
+        <item name="DialogTitleAppearance">@android:style/TextAppearance.Medium</item>
+        <item name="DialogSpotColor">@color/floatingButtonColor</item>
+        <item name="DialogSpotCount">4</item>
+    </style>
+
 </resources>

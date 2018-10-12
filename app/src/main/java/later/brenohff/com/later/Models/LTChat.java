@@ -3,6 +3,8 @@ package later.brenohff.com.later.Models;
 import java.io.Serializable;
 import java.util.Date;
 
+import later.brenohff.com.later.Enums.MessageType;
+
 public class LTChat implements Serializable {
 
     private Long id;
@@ -11,12 +13,6 @@ public class LTChat implements Serializable {
     private String eventId;
     private Date dtPost;
     private LTUser users;
-
-    public enum MessageType {
-        CHAT,
-        JOIN,
-        LEAVE
-    }
 
     //region GETTES AND SETTERS
 

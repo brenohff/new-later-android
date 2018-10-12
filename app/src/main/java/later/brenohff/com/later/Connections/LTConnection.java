@@ -2,6 +2,8 @@ package later.brenohff.com.later.Connections;
 
 import com.google.gson.GsonBuilder;
 
+import java.util.concurrent.TimeUnit;
+
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -26,7 +28,11 @@ public class LTConnection {
 
     private static Retrofit builder = new Retrofit.Builder()
             .baseUrl(API_BASE)
-            .client(new OkHttpClient())
+            .client(new OkHttpClient().newBuilder()
+                    .connectTimeout(120, TimeUnit.SECONDS)
+                    .readTimeout(60, TimeUnit.SECONDS)
+                    .writeTimeout(60, TimeUnit.SECONDS)
+                    .build())
             .addConverterFactory(GsonConverterFactory.create(new GsonBuilder().setDateFormat("dd/MM/yyyy HH:mm:ss").create()))
             .build();
 

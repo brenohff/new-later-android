@@ -10,6 +10,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -57,9 +58,10 @@ import static android.app.Activity.RESULT_OK;
 /**
  * Created by breno.franco on 23/08/2018.
  */
-public class CreateEventFragment extends Fragment implements View.OnClickListener {
+public class EditEventFragment extends Fragment implements View.OnClickListener {
 
     private Context context;
+    private LTEvent ltEvent;
 
     private MonetaryMask monetaryMask;
 
@@ -75,7 +77,6 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
     private Uri imageUri;
 
     private AlertDialog progressDialog;
-
 
     @Override
     public void onStop() {
@@ -98,6 +99,15 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
         super.onPause();
         if (progressDialog != null) {
             progressDialog.dismiss();
+        }
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        if (getArguments() != null) {
+            ltEvent = (LTEvent) getArguments().getSerializable("event");
         }
     }
 
@@ -131,6 +141,7 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
         monetaryMask = new MonetaryMask(valor_et);
         valor_et.addTextChangedListener(monetaryMask);
 
+        bt_register.setText("EDITAR EVENTO");
 
         /*
          * OnClickListener
@@ -149,6 +160,22 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
          * Chamada de métodos.
          */
         getCategories();
+
+        if (ltEvent != null) {
+            initiValues();
+        }
+    }
+
+    private void initiValues() {
+        titulo_et.setText(ltEvent.getTitle());
+        descricao_et.setText(ltEvent.getDescription());
+        valor_et.setText(String.format(Locale.getDefault(), "%.2f", ltEvent.getPrice()));
+        local_texto.setText(ltEvent.getLocale());
+        data_texto.setText(ltEvent.getDate());
+        hora_texto.setText(ltEvent.getHour());
+
+        lat = ltEvent.getLat();
+        lon = ltEvent.getLon();
     }
 
     @Override
@@ -238,11 +265,6 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
             hora_texto.setError("Escolha um horário!");
         }
 
-        if (imageUri == null) {
-            b = false;
-            Toast.makeText(context, "Insira uma foto.", Toast.LENGTH_SHORT).show();
-        }
-
         if (categoriesList.isEmpty()) {
             b = false;
             Toast.makeText(context, "Escolha pelo menos 1 categoria", Toast.LENGTH_SHORT).show();
@@ -315,7 +337,6 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
     }
 
     private void saveEvent() {
-        LTEvent ltEvent = new LTEvent();
         ltEvent.setCategories(categoriesList);
         ltEvent.setStatus(EventStatus.AGUARDANDO);
         ltEvent.setPrivate(false);
@@ -329,23 +350,31 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
         ltEvent.setHour(hora_texto.getText().toString());
         ltEvent.setUser(LTMainData.getInstance().getUser());
 
-        //Create file from image path
-        File originalFile = new File(getPath(imageUri));
-
-        //Parsing oject to json
-        Gson gson = new Gson();
-        String eventJson = gson.toJson(ltEvent);
-
-        //Create multipart
-        RequestBody eventPart = RequestBody.create(MultipartBody.FORM, eventJson);
-        RequestBody requestBody = RequestBody.create(MediaType.parse("multipart/form-data"), originalFile);
-        MultipartBody.Part body = MultipartBody.Part.createFormData("file", originalFile.getName(), requestBody);
-
         progressDialog = ((MainActivity) context).alertDialog(context, "Registrando evento...");
-
         LTRequests requests = LTConnection.createService(LTRequests.class);
-        Call<Void> call = requests.registerEvent(eventPart, body);
-        call.enqueue(new Callback<Void>() {
+        Call<Void> call = null;
+
+
+        if (imageUri != null) {
+            //Create file from image path
+            File originalFile = new File(getPath(imageUri));
+
+            //Parsing oject to json
+            Gson gson = new Gson();
+            String eventJson = gson.toJson(ltEvent);
+
+            //Create multipart
+            RequestBody eventPart = RequestBody.create(MultipartBody.FORM, eventJson);
+            RequestBody requestBody = RequestBody.create(MediaType.parse("multipart/form-data"), originalFile);
+            MultipartBody.Part body = MultipartBody.Part.createFormData("file", originalFile.getName(), requestBody);
+
+            call = requests.registerEvent(eventPart, body);
+
+        } else {
+            call = requests.updateEventWithoutImage(ltEvent);
+        }
+
+        Objects.requireNonNull(call).enqueue(new Callback<Void>() {
             @Override
             public void onResponse(@NonNull Call<Void> call, @NonNull Response<Void> response) {
                 if (response.isSuccessful()) {
@@ -445,6 +474,5 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
         cursor.close();
         return filePath;
     }
-
 
 }

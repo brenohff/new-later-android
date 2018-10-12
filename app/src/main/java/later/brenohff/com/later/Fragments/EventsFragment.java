@@ -61,7 +61,7 @@ public class EventsFragment extends Fragment {
     private void castFields(View view) {
         recyclerView = view.findViewById(R.id.events_recyclerView);
 
-        alertDialog = ((MainActivity) context).alertDialog(alertDialog, context, "Buscando eventos...");
+        alertDialog = ((MainActivity) context).alertDialog(context, "Buscando eventos...");
         getEvents();
     }
 

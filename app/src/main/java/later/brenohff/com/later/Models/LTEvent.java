@@ -3,6 +3,8 @@ package later.brenohff.com.later.Models;
 import java.io.Serializable;
 import java.util.List;
 
+import later.brenohff.com.later.Enums.EventStatus;
+
 public class LTEvent implements Serializable {
 
     private Long id;
@@ -11,7 +13,7 @@ public class LTEvent implements Serializable {
 
     private String title;
     private String description;
-    private String status;
+    private EventStatus status;
     private String date;
     private String hour;
     private String locale;
@@ -66,11 +68,19 @@ public class LTEvent implements Serializable {
         this.description = description;
     }
 
-    public String getStatus() {
+    public LTUser getUsers() {
+        return users;
+    }
+
+    public void setUsers(LTUser users) {
+        this.users = users;
+    }
+
+    public EventStatus getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(EventStatus status) {
         this.status = status;
     }
 
