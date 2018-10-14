@@ -2,6 +2,8 @@ package later.brenohff.com.later.Models;
 
 import java.io.Serializable;
 
+import later.brenohff.com.later.Enums.UserType;
+
 public class LTUser implements Serializable {
 
     private String id;
@@ -12,6 +14,8 @@ public class LTUser implements Serializable {
     private String email;
     private String gender;
     private String link;
+
+    private UserType userType;
 
     public LTUser() {
     }
@@ -78,5 +82,13 @@ public class LTUser implements Serializable {
 
     public void setLink(String link) {
         this.link = link;
+    }
+
+    public UserType getUserType() {
+        return userType;
+    }
+
+    public void setUserType(UserType userType) {
+        this.userType = userType;
     }
 }

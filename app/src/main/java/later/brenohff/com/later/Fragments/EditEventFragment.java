@@ -352,7 +352,7 @@ public class EditEventFragment extends Fragment implements View.OnClickListener 
 
         progressDialog = ((MainActivity) context).alertDialog(context, "Registrando evento...");
         LTRequests requests = LTConnection.createService(LTRequests.class);
-        Call<Void> call = null;
+        Call<Void> call;
 
 
         if (imageUri != null) {
@@ -368,7 +368,7 @@ public class EditEventFragment extends Fragment implements View.OnClickListener 
             RequestBody requestBody = RequestBody.create(MediaType.parse("multipart/form-data"), originalFile);
             MultipartBody.Part body = MultipartBody.Part.createFormData("file", originalFile.getName(), requestBody);
 
-            call = requests.registerEvent(eventPart, body);
+            call = requests.updateEventWithImage(eventPart, body);
 
         } else {
             call = requests.updateEventWithoutImage(ltEvent);
@@ -389,7 +389,7 @@ public class EditEventFragment extends Fragment implements View.OnClickListener 
             @Override
             public void onFailure(@NonNull Call<Void> call, @NonNull Throwable t) {
                 progressDialog.dismiss();
-                t.printStackTrace();
+                Toast.makeText(context, "Falha ao editar evento.", Toast.LENGTH_SHORT).show();
             }
         });
     }

@@ -44,29 +44,31 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="30dp"
-        android:layout_marginRight="30dp"
         android:layout_marginTop="50dp"
+        android:layout_marginRight="30dp"
         android:background="@color/floatingButtonColor"
         android:text="@string/bt_profile_create_event"
         android:textColor="@color/white" />
 
     <Button
+        android:id="@+id/profile_fragment_approve_event"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="30dp"
-        android:layout_marginRight="30dp"
         android:layout_marginTop="10dp"
+        android:layout_marginRight="30dp"
         android:background="@color/floatingButtonColor"
         android:text="@string/bt_profile_approve_events"
-        android:textColor="@color/white" />
+        android:textColor="@color/white"
+        android:visibility="gone" />
 
     <Button
         android:id="@+id/profile_fragment_my_events"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="30dp"
-        android:layout_marginRight="30dp"
         android:layout_marginTop="10dp"
+        android:layout_marginRight="30dp"
         android:background="@color/floatingButtonColor"
         android:text="@string/bt_profile_my_events"
         android:textColor="@color/white" />
@@ -76,8 +78,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="30dp"
-        android:layout_marginRight="30dp"
         android:layout_marginTop="10dp"
+        android:layout_marginRight="30dp"
         android:background="@color/floatingButtonColor"
         android:text="@string/bt_profile_logout"
         android:textColor="@color/white" />

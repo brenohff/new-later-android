@@ -23,6 +23,7 @@ import com.squareup.picasso.Picasso;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import later.brenohff.com.later.Activities.MainActivity;
+import later.brenohff.com.later.Enums.UserType;
 import later.brenohff.com.later.Memory.LTMainData;
 import later.brenohff.com.later.Models.LTUser;
 import later.brenohff.com.later.Others.SaveUserOnDevice;
@@ -57,10 +58,16 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         Button bt_logout = view.findViewById(R.id.profile_fragment_logout);
         Button bt_criarEvento = view.findViewById(R.id.profile_fragment_create_event);
         Button bt_my_events = view.findViewById(R.id.profile_fragment_my_events);
+        Button bt_approve_event = view.findViewById(R.id.profile_fragment_approve_event);
 
         if (LTMainData.getInstance().getUser() != null) {
             user = LTMainData.getInstance().getUser();
             setUserInfo();
+        }
+
+        if(user.getUserType().equals(UserType.ADMIN)){
+            bt_approve_event.setVisibility(View.VISIBLE);
+            bt_approve_event.setOnClickListener(this);
         }
 
         bt_my_events.setOnClickListener(this);

@@ -45,6 +45,12 @@ public interface LTRequests {
     @PUT("events/updateEventWithoutImage")
     Call<Void> updateEventWithoutImage(@Body LTEvent event);
 
+    @Multipart
+    @PUT("events/updateEventWithImage")
+    Call<Void> updateEventWithImage(
+            @Part("event") RequestBody event,
+            @Part MultipartBody.Part file);
+
     ////////////////////////////////////////////////////////////////////////////////////////////////////
     ///// USERS
     ////////////////////////////////////////////////////////////////////////////////////////////////////
