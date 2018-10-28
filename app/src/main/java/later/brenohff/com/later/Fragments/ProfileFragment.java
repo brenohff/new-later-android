@@ -65,7 +65,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
             setUserInfo();
         }
 
-        if(user.getUserType().equals(UserType.ADMIN)){
+        if (user.getUserType() != null && user.getUserType().equals(UserType.ADMIN)) {
             bt_approve_event.setVisibility(View.VISIBLE);
             bt_approve_event.setOnClickListener(this);
         }
