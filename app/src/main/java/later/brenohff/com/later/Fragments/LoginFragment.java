@@ -4,27 +4,25 @@ package later.brenohff.com.later.Fragments;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageView;
 
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
 import com.facebook.GraphRequest;
-import com.facebook.GraphResponse;
 import com.facebook.LoggingBehavior;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 
 import org.json.JSONException;
-import org.json.JSONObject;
 
-import java.util.Arrays;
+import java.util.Collections;
 
 import later.brenohff.com.later.Activities.MainActivity;
 import later.brenohff.com.later.Connections.LTConnection;
@@ -43,30 +41,16 @@ import retrofit2.Response;
 public class LoginFragment extends Fragment {
 
     private Context context;
-
     private LTUser user;
-
-    private Button login_facebook;
-    private ImageView login_background;
     private CallbackManager callbackManager = CallbackManager.Factory.create();
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_login, container, false);
         context = view.getContext();
 
-        login_facebook = (Button) view.findViewById(R.id.login_btFacebook);
-        login_background = (ImageView) view.findViewById(R.id.login_background);
-
-        //TODO DESCOMENTAR ESSA LINHA.
-//        Picasso.get().load(R.drawable.background).resize(500, 500).into(login_background);
-
-        login_facebook.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                loginFacebook();
-            }
-        });
+        Button login_facebook = view.findViewById(R.id.login_btFacebook);
+        login_facebook.setOnClickListener(view1 -> loginFacebook());
 
         return view;
     }
@@ -78,7 +62,7 @@ public class LoginFragment extends Fragment {
     }
 
     private void loginFacebook() {
-        LoginManager.getInstance().logInWithReadPermissions(this, Arrays.asList("public_profile, email, user_friends, user_birthday"));
+        LoginManager.getInstance().logInWithReadPermissions(this, Collections.singletonList("public_profile, email, user_friends, user_birthday"));
         LoginManager.getInstance().registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
@@ -99,29 +83,24 @@ public class LoginFragment extends Fragment {
 
     private void getUserInfo(LoginResult loginResult) {
         FacebookSdk.addLoggingBehavior(LoggingBehavior.REQUESTS);
-        GraphRequest request = GraphRequest.newMeRequest(loginResult.getAccessToken(), new GraphRequest.GraphJSONObjectCallback() {
-            @Override
-            public void onCompleted(JSONObject object, GraphResponse response) {
-                user = new LTUser();
-                try {
-                    user.setBirthday(object.getString("birthday"));
-                    user.setEmail(object.getString("email"));
-                    user.setId(object.getString("id"));
-                    user.setName(object.getString("name"));
-                    user.setGender(object.getString("gender"));
-                    user.setLink(object.getString("link"));
-                    user.setImage("https://graph.facebook.com/" + user.getId() + "/picture");
-                    user.setImage_long("https://graph.facebook.com/" + user.getId() + "/picture?type=large");
+        GraphRequest request = GraphRequest.newMeRequest(loginResult.getAccessToken(), (object, response) -> {
+            user = new LTUser();
+            try {
+                user.setBirthday(object.getString("birthday"));
+                user.setEmail(object.getString("email"));
+                user.setId(object.getString("id"));
+                user.setName(object.getString("name"));
+                user.setImage("https://graph.facebook.com/" + user.getId() + "/picture");
+                user.setImage_long("https://graph.facebook.com/" + user.getId() + "/picture?type=large");
 
-                    saveUser(user);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
+                saveUser(user);
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
         });
 
         Bundle parameters = new Bundle();
-        parameters.putString("fields", "id,name,link,email,gender,birthday");
+        parameters.putString("fields", "id,name,email,birthday");
         request.setParameters(parameters);
         request.executeAsync();
     }
@@ -131,7 +110,7 @@ public class LoginFragment extends Fragment {
         Call<Void> call = requests.registrarUsuario(user);
         call.enqueue(new Callback<Void>() {
             @Override
-            public void onResponse(Call<Void> call, Response<Void> response) {
+            public void onResponse(@NonNull Call<Void> call, @NonNull Response<Void> response) {
                 if (response.isSuccessful()) {
                     LTMainData.getInstance().setUser(user);
                     ((MainActivity) context).showToast("Bem vindo, " + user.getName());
@@ -151,7 +130,7 @@ public class LoginFragment extends Fragment {
             }
 
             @Override
-            public void onFailure(Call<Void> call, Throwable t) {
+            public void onFailure(@NonNull Call<Void> call, @NonNull Throwable t) {
                 ((MainActivity) context).showToast("Erro ao realizar login.");
             }
         });

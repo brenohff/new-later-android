@@ -54,13 +54,7 @@ public class MainActivity extends AppCompatActivity {
             this.doubleBackToExitPressedOnce = true;
             Toast.makeText(this, "Precione novamente para sair...", Toast.LENGTH_SHORT).show();
 
-            new Handler().postDelayed(new Runnable() {
-
-                @Override
-                public void run() {
-                    doubleBackToExitPressedOnce = false;
-                }
-            }, 2000);
+            new Handler().postDelayed(() -> doubleBackToExitPressedOnce = false, 2000);
         } else {
             popFragment(1);
         }
@@ -211,10 +205,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    //region PERMISSIONS
-
-    //endregion
-
     //region BOTTOM BAR
     public static void setBottomBarInvisible() {
         bottomMenu.setVisibility(View.GONE);
@@ -230,7 +220,6 @@ public class MainActivity extends AppCompatActivity {
         getWindowManager().getDefaultDisplay().getMetrics(metrics);
 
         return metrics.widthPixels;
-
     }
 
     public AlertDialog alertDialog(Context context, String message) {
