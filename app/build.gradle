@@ -4,7 +4,7 @@ apply plugin: 'kotlin-android'
 android {
     signingConfigs {
         config {
-            keyAlias 'Later'
+            keyAlias 'laterandroid'
             keyPassword 'laterapp'
             storeFile file('C:/Users/Breno Henrique/Google Drive/Pessoal/Later/later.jks')
             storePassword 'laterapp'
