@@ -1,12 +1,19 @@
 package later.brenohff.com.later.Activities;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.Signature;
+import android.location.LocationManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.Settings;
+import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
@@ -41,6 +48,8 @@ import later.brenohff.com.later.R;
 public class MainActivity extends AppCompatActivity {
 
     private static BottomBar bottomMenu;
+    private LocationManager locationManager;
+    private android.support.v7.app.AlertDialog alert;
     boolean doubleBackToExitPressedOnce = false;
 
     @Override
@@ -61,9 +70,20 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (alert != null) {
+            alert.dismiss();
+        }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        setPermissions();
 
         if (AccessToken.getCurrentAccessToken() != null) {
             if (SaveUserOnDevice.loadSavedUser(this) != null) {
@@ -100,7 +120,11 @@ public class MainActivity extends AppCompatActivity {
                     changeFragment(new EventsFragment(), "EventsFragment");
                     break;
                 case R.id.nav_mapa:
-                    changeFragment(new MapsFragment(), "MapsFragment");
+                    if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                        Toast.makeText(this, "Por favor, conceda permissão para que o app possa obter sua localização.", Toast.LENGTH_LONG).show();
+                    } else {
+                        changeFragment(new MapsFragment(), "MapsFragment");
+                    }
                     break;
             }
         });
@@ -233,5 +257,43 @@ public class MainActivity extends AppCompatActivity {
 
         return alertDialog;
     }
+
+    //region PERMISSION
+
+    private void setPermissions() {
+        locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[], @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case 1: {
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+                        showGPSDisabledAlertToUser();
+                    }
+                } else {
+                    Toast.makeText(this, "Permissão negada para esta função.", Toast.LENGTH_SHORT).show();
+                }
+            }
+        }
+    }
+
+    private void showGPSDisabledAlertToUser() {
+        android.support.v7.app.AlertDialog.Builder alertDialogBuilder = new android.support.v7.app.AlertDialog.Builder(this);
+        alertDialogBuilder.setMessage("O GPS está desativado. Deseja ativá-lo?")
+                .setCancelable(false)
+                .setPositiveButton("Ativar GPS",
+                        (dialog, id) -> startActivityForResult(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS), 1));
+        alertDialogBuilder.setNegativeButton("Cancelar",
+                (dialog, id) -> dialog.cancel());
+        alert = alertDialogBuilder.create();
+        alert.show();
+    }
+    //endregion
 
 }
