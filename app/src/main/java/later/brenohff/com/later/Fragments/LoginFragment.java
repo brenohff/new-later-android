@@ -115,13 +115,13 @@ public class LoginFragment extends Fragment {
                     LTMainData.getInstance().setUser(user);
                     ((MainActivity) context).showToast("Bem vindo, " + user.getName());
                     ((MainActivity) context).pushFragmentWithNoStack(new ProfileFragment(), "ProfileFragment");
-                    SaveUserOnDevice saveUserOnDevice = new SaveUserOnDevice(user);
+                    SaveUserOnDevice saveUserOnDevice = new SaveUserOnDevice(user.getId());
                     saveUserOnDevice.saveUser(context);
                 } else if (response.code() == 409) {
                     LTMainData.getInstance().setUser(user);
                     ((MainActivity) context).showToast("Olá novamente, " + user.getName());
                     ((MainActivity) context).pushFragmentWithNoStack(new ProfileFragment(), "ProfileFragment");
-                    SaveUserOnDevice saveUserOnDevice = new SaveUserOnDevice(user);
+                    SaveUserOnDevice saveUserOnDevice = new SaveUserOnDevice(user.getId());
                     saveUserOnDevice.saveUser(context);
                 } else {
                     LoginManager.getInstance().logOut();

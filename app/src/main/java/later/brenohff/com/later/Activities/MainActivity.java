@@ -36,14 +36,20 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Objects;
 
 import dmax.dialog.SpotsDialog;
+import later.brenohff.com.later.Connections.LTConnection;
+import later.brenohff.com.later.Connections.LTRequests;
 import later.brenohff.com.later.Fragments.CategoriesFragment;
 import later.brenohff.com.later.Fragments.EventsFragment;
 import later.brenohff.com.later.Fragments.LoginFragment;
 import later.brenohff.com.later.Fragments.MapsFragment;
 import later.brenohff.com.later.Fragments.ProfileFragment;
 import later.brenohff.com.later.Memory.LTMainData;
+import later.brenohff.com.later.Models.LTUser;
 import later.brenohff.com.later.Others.SaveUserOnDevice;
 import later.brenohff.com.later.R;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -86,15 +92,7 @@ public class MainActivity extends AppCompatActivity {
         setPermissions();
 
         if (AccessToken.getCurrentAccessToken() != null) {
-            if (SaveUserOnDevice.loadSavedUser(this) != null) {
-                LTMainData.getInstance().setUser(Objects.requireNonNull(SaveUserOnDevice.loadSavedUser(this)).getUser());
-                changeFragment(new ProfileFragment(), "ProfileFragment");
-            } else {
-                showToast("Não foi possível carregar usuário, faça login novamente.");
-                LoginManager.getInstance().logOut();
-                SaveUserOnDevice.removeSavedUser(this);
-                changeFragment(new LoginFragment(), "LoginFragment");
-            }
+            getUserByID();
         } else {
             changeFragment(new LoginFragment(), "LoginFragment");
         }
@@ -196,39 +194,6 @@ public class MainActivity extends AppCompatActivity {
 
     //endregion
 
-    private void changeStatusBarColor(Integer color) {
-        if (android.os.Build.VERSION.SDK_INT >= 21) {
-            final Window window = this.getWindow();
-            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-            window.setStatusBarColor(this.getResources().getColor(color));
-        }
-    }
-
-    public void showToast(String value) {
-        Toast.makeText(this, value, Toast.LENGTH_SHORT).show();
-    }
-
-    private void initFB() {
-        FacebookSdk.sdkInitialize(getApplicationContext());
-        AppEventsLogger.activateApp(this);
-    }
-
-    private void showFBInfo() {
-        try {
-            PackageInfo info = this.getPackageManager().getPackageInfo("later.brenohff.com.later", PackageManager.GET_SIGNATURES);
-            for (Signature signature : info.signatures) {
-                MessageDigest md = MessageDigest.getInstance("SHA");
-                md.update(signature.toByteArray());
-                Log.d("KeyHash:", Base64.encodeToString(md.digest(), Base64.DEFAULT));
-            }
-        } catch (PackageManager.NameNotFoundException ignored) {
-
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        }
-    }
-
     //region BOTTOM BAR
     public static void setBottomBarInvisible() {
         bottomMenu.setVisibility(View.GONE);
@@ -238,25 +203,6 @@ public class MainActivity extends AppCompatActivity {
         bottomMenu.setVisibility(View.VISIBLE);
     }
     //endregion
-
-    public int getWidth() {
-        DisplayMetrics metrics = new DisplayMetrics();
-        getWindowManager().getDefaultDisplay().getMetrics(metrics);
-
-        return metrics.widthPixels;
-    }
-
-    public AlertDialog alertDialog(Context context, String message) {
-        AlertDialog alertDialog = new SpotsDialog.Builder()
-                .setContext(context)
-                .setMessage(message)
-                .setCancelable(false)
-                .setTheme(R.style.AlertDialogStyle)
-                .build();
-        alertDialog.show();
-
-        return alertDialog;
-    }
 
     //region PERMISSION
 
@@ -295,5 +241,85 @@ public class MainActivity extends AppCompatActivity {
         alert.show();
     }
     //endregion
+
+    private void getUserByID() {
+        if (SaveUserOnDevice.loadSavedUser(this) != null) {
+            LTRequests request = LTConnection.createService(LTRequests.class);
+            Call<LTUser> call = request.getUserByFaceID(Objects.requireNonNull(SaveUserOnDevice.loadSavedUser(this)).getUser_id());
+            call.enqueue(new Callback<LTUser>() {
+                @Override
+                public void onResponse(@NonNull Call<LTUser> call, @NonNull Response<LTUser> response) {
+                    if (response.isSuccessful()) {
+                        LTMainData.getInstance().setUser(response.body());
+                    }else{
+                        showToast("Não foi possível obter usuário, tente novamente.");
+                    }
+                }
+
+                @Override
+                public void onFailure(@NonNull Call<LTUser> call, @NonNull Throwable t) {
+                    showToast("Erro ao conectar com o servidor, tente novamente.");
+                }
+            });
+        } else {
+            showToast("Não foi possível carregar usuário, faça login novamente.");
+            LoginManager.getInstance().logOut();
+            SaveUserOnDevice.removeSavedUser(this);
+            changeFragment(new LoginFragment(), "LoginFragment");
+        }
+    }
+
+    private void changeStatusBarColor(Integer color) {
+        if (android.os.Build.VERSION.SDK_INT >= 21) {
+            final Window window = this.getWindow();
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+            window.setStatusBarColor(this.getResources().getColor(color));
+        }
+    }
+
+    public void showToast(String value) {
+        Toast.makeText(this, value, Toast.LENGTH_SHORT).show();
+    }
+
+    private void initFB() {
+        FacebookSdk.sdkInitialize(getApplicationContext());
+        AppEventsLogger.activateApp(this);
+    }
+
+    private void showFBInfo() {
+        try {
+            PackageInfo info = this.getPackageManager().getPackageInfo("later.brenohff.com.later", PackageManager.GET_SIGNATURES);
+            for (Signature signature : info.signatures) {
+                MessageDigest md = MessageDigest.getInstance("SHA");
+                md.update(signature.toByteArray());
+                Log.d("KeyHash:", Base64.encodeToString(md.digest(), Base64.DEFAULT));
+            }
+        } catch (PackageManager.NameNotFoundException ignored) {
+
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public int getWidth() {
+        DisplayMetrics metrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(metrics);
+
+        return metrics.widthPixels;
+    }
+
+    public AlertDialog alertDialog(Context context, String message) {
+        AlertDialog alertDialog = new SpotsDialog.Builder()
+                .setContext(context)
+                .setMessage(message)
+                .setCancelable(false)
+                .setTheme(R.style.AlertDialogStyle)
+                .build();
+        alertDialog.show();
+
+        return alertDialog;
+    }
+
 
 }
