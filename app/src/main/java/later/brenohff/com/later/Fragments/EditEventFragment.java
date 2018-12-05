@@ -62,9 +62,11 @@ public class EditEventFragment extends Fragment implements View.OnClickListener 
 
     private Context context;
     private LTEvent ltEvent;
+    private boolean isPrivate;
 
     private MonetaryMask monetaryMask;
 
+    private Switch aSwitch;
     private TextView data_texto, hora_texto, local_texto;
     private TagView tagView;
     private List<Tag> tagList;
@@ -129,7 +131,7 @@ public class EditEventFragment extends Fragment implements View.OnClickListener 
         Button bt_register = view.findViewById(R.id.fragment_event_register_register);
         Button bt_upload = view.findViewById(R.id.fragment_event_register_uploadImage);
 
-        Switch modo = view.findViewById(R.id.fragment_event_register_switch);
+        aSwitch = view.findViewById(R.id.fragment_event_register_switch);
 
         data_texto = view.findViewById(R.id.fragment_event_register_data);
         hora_texto = view.findViewById(R.id.fragment_event_register_hora);
@@ -146,7 +148,7 @@ public class EditEventFragment extends Fragment implements View.OnClickListener 
         /*
          * OnClickListener
          */
-        modo.setOnClickListener(this);
+        aSwitch.setOnClickListener(this);
         data_texto.setOnClickListener(this);
         hora_texto.setOnClickListener(this);
         local_texto.setOnClickListener(this);
@@ -174,6 +176,10 @@ public class EditEventFragment extends Fragment implements View.OnClickListener 
         data_texto.setText(ltEvent.getDate());
         hora_texto.setText(ltEvent.getHour());
 
+        isPrivate = ltEvent.isPrivate();
+        aSwitch.setChecked(isPrivate);
+
+
         lat = ltEvent.getLat();
         lon = ltEvent.getLon();
     }
@@ -182,6 +188,7 @@ public class EditEventFragment extends Fragment implements View.OnClickListener 
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.fragment_event_register_switch:
+                isPrivate = !isPrivate;
                 break;
 
             case R.id.fragment_event_register_local:
@@ -235,12 +242,12 @@ public class EditEventFragment extends Fragment implements View.OnClickListener 
     private boolean validateFields() {
         boolean b = true;
 
-        if (titulo_et.getText().toString().isEmpty()) {
+        if (Objects.requireNonNull(titulo_et.getText()).toString().isEmpty()) {
             b = false;
             titulo_et.setError("Insira um título");
         }
 
-        if (descricao_et.getText().toString().isEmpty()) {
+        if (Objects.requireNonNull(descricao_et.getText()).toString().isEmpty()) {
             b = false;
             descricao_et.setError("Insira uma descrição");
         }
@@ -250,7 +257,7 @@ public class EditEventFragment extends Fragment implements View.OnClickListener 
             local_texto.setError("Insira uma local");
         }
 
-        if (valor_et.getText().toString().isEmpty()) {
+        if (Objects.requireNonNull(valor_et.getText()).toString().isEmpty()) {
             b = false;
             valor_et.setError("Insira uma valor!");
         }
@@ -339,13 +346,13 @@ public class EditEventFragment extends Fragment implements View.OnClickListener 
     private void saveEvent() {
         ltEvent.setCategories(categoriesList);
         ltEvent.setStatus(EventStatus.AGUARDANDO);
-        ltEvent.setPrivate(false);
+        ltEvent.setPrivate(isPrivate);
         ltEvent.setLat(lat);
         ltEvent.setLon(lon);
-        ltEvent.setTitle(titulo_et.getText().toString());
-        ltEvent.setDescription(descricao_et.getText().toString());
+        ltEvent.setTitle(Objects.requireNonNull(titulo_et.getText()).toString());
+        ltEvent.setDescription(Objects.requireNonNull(descricao_et.getText()).toString());
         ltEvent.setLocale(local_texto.getText().toString());
-        ltEvent.setPrice(monetaryMask.valorSemMascara(valor_et.getText().toString()));
+        ltEvent.setPrice(monetaryMask.valorSemMascara(Objects.requireNonNull(valor_et.getText()).toString()));
         ltEvent.setDate(data_texto.getText().toString());
         ltEvent.setHour(hora_texto.getText().toString());
         ltEvent.setUser(LTMainData.getInstance().getUser());
@@ -379,7 +386,8 @@ public class EditEventFragment extends Fragment implements View.OnClickListener 
             public void onResponse(@NonNull Call<Void> call, @NonNull Response<Void> response) {
                 if (response.isSuccessful()) {
                     progressDialog.dismiss();
-                    Toast.makeText(context, "Evento criado com sucesso.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, "Evento editado com sucesso, aguarde aprovação", Toast.LENGTH_SHORT).show();
+                    ((MainActivity) context).popFragment(1);
                 } else {
                     progressDialog.dismiss();
                     Toast.makeText(context, response.code() + response.message(), Toast.LENGTH_SHORT).show();

@@ -14,8 +14,8 @@ android {
             applicationId "later.brenohff.com.later"
             minSdkVersion 21
             targetSdkVersion 28
-            versionCode 5
-            versionName "1.1.0"
+            versionCode 6
+            versionName "1.1.1"
             testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         }
         buildTypes {
@@ -51,8 +51,8 @@ dependencies {
     implementation 'com.google.android.gms:play-services:12.0.1'
     implementation 'com.google.firebase:firebase-core:12.0.1'
 
-    implementation 'com.facebook.android:facebook-android-sdk:4.32.0'
-    implementation 'com.facebook.android:facebook-login:4.32.0'
+    implementation 'com.facebook.android:facebook-android-sdk:4.38.1'
+    implementation 'com.facebook.android:facebook-login:4.38.1'
 
     implementation 'com.squareup.retrofit2:retrofit:2.4.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.4.0'

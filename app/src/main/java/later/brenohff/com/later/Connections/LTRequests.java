@@ -36,7 +36,7 @@ public interface LTRequests {
     @GET("events/getEventsByUser")
     Call<List<LTEvent>> getEventsByUser(@Query("user_id") String user_id);
 
-    @GET("events/getPublic")
+    @GET("events/getEventsActivesAndPublic")
     Call<List<LTEvent>> getPublic();
 
     @GET("events/changeEventStatus")

@@ -86,7 +86,6 @@ public class LoginFragment extends Fragment {
         GraphRequest request = GraphRequest.newMeRequest(loginResult.getAccessToken(), (object, response) -> {
             user = new LTUser();
             try {
-                user.setBirthday(object.getString("birthday"));
                 user.setEmail(object.getString("email"));
                 user.setId(object.getString("id"));
                 user.setName(object.getString("name"));
@@ -100,7 +99,7 @@ public class LoginFragment extends Fragment {
         });
 
         Bundle parameters = new Bundle();
-        parameters.putString("fields", "id,name,email,birthday");
+        parameters.putString("fields", "id,name,email");
         request.setParameters(parameters);
         request.executeAsync();
     }

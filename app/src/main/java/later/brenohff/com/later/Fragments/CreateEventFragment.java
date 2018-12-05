@@ -39,7 +39,6 @@ import java.util.Objects;
 import later.brenohff.com.later.Activities.MainActivity;
 import later.brenohff.com.later.Connections.LTConnection;
 import later.brenohff.com.later.Connections.LTRequests;
-import later.brenohff.com.later.Enums.EventStatus;
 import later.brenohff.com.later.Memory.LTMainData;
 import later.brenohff.com.later.Models.LTCategory;
 import later.brenohff.com.later.Models.LTEvent;
@@ -60,6 +59,7 @@ import static android.app.Activity.RESULT_OK;
 public class CreateEventFragment extends Fragment implements View.OnClickListener {
 
     private Context context;
+    private boolean isPrivate = false;
 
     private MonetaryMask monetaryMask;
 
@@ -155,6 +155,7 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.fragment_event_register_switch:
+                isPrivate = !isPrivate;
                 break;
 
             case R.id.fragment_event_register_local:
@@ -208,22 +209,22 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
     private boolean validateFields() {
         boolean b = true;
 
-        if (titulo_et.getText().toString().isEmpty()) {
+        if (Objects.requireNonNull(titulo_et.getText()).toString().isEmpty()) {
             b = false;
             titulo_et.setError("Insira um título");
         }
 
-        if (descricao_et.getText().toString().isEmpty()) {
+        if (Objects.requireNonNull(descricao_et.getText()).toString().isEmpty()) {
             b = false;
             descricao_et.setError("Insira uma descrição");
         }
 
-        if (local_texto.getText().toString().equals("Local")) {
+        if ("Local".equals(local_texto.getText().toString())) {
             b = false;
             local_texto.setError("Insira uma local");
         }
 
-        if (valor_et.getText().toString().isEmpty()) {
+        if (Objects.requireNonNull(valor_et.getText()).toString().isEmpty()) {
             b = false;
             valor_et.setError("Insira uma valor!");
         }
@@ -317,14 +318,13 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
     private void saveEvent() {
         LTEvent ltEvent = new LTEvent();
         ltEvent.setCategories(categoriesList);
-        ltEvent.setStatus(EventStatus.AGUARDANDO);
-        ltEvent.setPrivate(false);
+        ltEvent.setPrivate(isPrivate);
         ltEvent.setLat(lat);
         ltEvent.setLon(lon);
-        ltEvent.setTitle(titulo_et.getText().toString());
-        ltEvent.setDescription(descricao_et.getText().toString());
+        ltEvent.setTitle(Objects.requireNonNull(titulo_et.getText()).toString());
+        ltEvent.setDescription(Objects.requireNonNull(descricao_et.getText()).toString());
         ltEvent.setLocale(local_texto.getText().toString());
-        ltEvent.setPrice(monetaryMask.valorSemMascara(valor_et.getText().toString()));
+        ltEvent.setPrice(monetaryMask.valorSemMascara(Objects.requireNonNull(valor_et.getText()).toString()));
         ltEvent.setDate(data_texto.getText().toString());
         ltEvent.setHour(hora_texto.getText().toString());
         ltEvent.setUser(LTMainData.getInstance().getUser());
@@ -350,7 +350,8 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
             public void onResponse(@NonNull Call<Void> call, @NonNull Response<Void> response) {
                 if (response.isSuccessful()) {
                     progressDialog.dismiss();
-                    Toast.makeText(context, "Evento criado com sucesso.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, "Evento criado com sucesso, aguarde aprovação do administrador.", Toast.LENGTH_SHORT).show();
+                    ((MainActivity) context).popFragment(1);
                 } else {
                     progressDialog.dismiss();
                     Toast.makeText(context, response.code() + response.message(), Toast.LENGTH_SHORT).show();
@@ -424,9 +425,9 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
                 (view, hourOfDay, minute, second) -> hora_texto.setText(String.format(Locale.getDefault(), "%s:%s",
                         (hourOfDay < 10) ? "0" + Integer.toString(hourOfDay) : Integer.toString(hourOfDay),
                         (minute < 10) ? "0" + Integer.toString(minute) : Integer.toString(minute))),
-                now.getTime().getHours(),
-                now.getTime().getMinutes(),
-                now.getTime().getSeconds(),
+                now.get(Calendar.HOUR),
+                now.get(Calendar.MINUTE),
+                now.get(Calendar.SECOND),
                 false
         );
         tpd.setAccentColor(context.getResources().getColor(R.color.floatingButtonColor));
