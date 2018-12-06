@@ -88,10 +88,11 @@ public class EventFragment extends Fragment implements View.OnClickListener {
         event_description.setText(event.getDescription());
         event_locale.setText(event.getLocale());
 
-        String staticMapUrl = "http://maps.google.com/maps/api/staticmap?center="
+        String staticMapUrl = "https://maps.googleapis.com/maps/api/staticmap?center="
                 + event.getLat() + "," + event.getLon()
                 + "&markers=icon:|" + event.getLat() + "," + event.getLon()
-                + "&zoom=" + 17 + "&size=480x200&sensor=false";
+                + "&zoom=" + 17 + "&size=480x200&sensor=false"
+                + "&key=AIzaSyANfYAvfM9S-dJ-vcDtnfSWaZ54qcF0eeM";
 
         getCategories();
 
