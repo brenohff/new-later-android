@@ -124,7 +124,7 @@ public class MyEventsFragment extends Fragment {
                     return true;
 
                 case R.id.popup_edit:
-                    EditEventFragment editEventFragment= new EditEventFragment();
+                    EditEventFragment editEventFragment = new EditEventFragment();
                     Bundle editBundle = new Bundle();
                     editBundle.putSerializable("event", event);
                     editEventFragment.setArguments(editBundle);
@@ -132,7 +132,7 @@ public class MyEventsFragment extends Fragment {
                     return true;
 
                 case R.id.popup_delete:
-                    deleteEvent();
+                    deleteEvent(event);
                     return true;
 
                 default:
@@ -143,11 +143,11 @@ public class MyEventsFragment extends Fragment {
         popup.show();
     }
 
-    private void deleteEvent() {
+    private void deleteEvent(LTEvent event) {
         alertDialog = ((MainActivity) context).alertDialog(context, "Cancelando evento...");
 
         LTRequests requests = LTConnection.createService(LTRequests.class);
-        Call<Void> call = requests.changeEventStatus(EventStatus.CANCELADO);
+        Call<Void> call = requests.changeEventStatus(event.getId(), EventStatus.CANCELADO);
         call.enqueue(new Callback<Void>() {
             @Override
             public void onResponse(@NonNull Call<Void> call, @NonNull Response<Void> response) {

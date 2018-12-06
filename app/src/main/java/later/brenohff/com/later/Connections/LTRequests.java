@@ -37,10 +37,16 @@ public interface LTRequests {
     Call<List<LTEvent>> getEventsByUser(@Query("user_id") String user_id);
 
     @GET("events/getEventsActivesAndPublic")
-    Call<List<LTEvent>> getPublic();
+    Call<List<LTEvent>> getEventsActivesAndPublic();
+
+    @GET("events/getPendingEvents")
+    Call<List<LTEvent>> getPendingEvents();
+
+    @GET("events/getEventsByCategory")
+    Call<List<LTEvent>> getEventsByCategory(@Query("category_id") Long category_id);
 
     @GET("events/changeEventStatus")
-    Call<Void> changeEventStatus(@Query("event_status") EventStatus eventStatus);
+    Call<Void> changeEventStatus(@Query("event_id") Long event_id, @Query("event_status") EventStatus eventStatus);
 
     @PUT("events/updateEventWithoutImage")
     Call<Void> updateEventWithoutImage(@Body LTEvent event);

@@ -67,7 +67,7 @@ public class EventsFragment extends Fragment {
 
     private void getEvents() {
         LTRequests requests = LTConnection.createService(LTRequests.class);
-        Call<List<LTEvent>> call = requests.getPublic();
+        Call<List<LTEvent>> call = requests.getEventsActivesAndPublic();
         call.enqueue(new Callback<List<LTEvent>>() {
             @Override
             public void onResponse(@NonNull Call<List<LTEvent>> call, @NonNull Response<List<LTEvent>> response) {

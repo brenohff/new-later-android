@@ -21,4 +21,9 @@
     <string name="popup_edit">Editar</string>
     <string name="popup_delete">Deletar</string>
 
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="popup_approve">Aprovar</string>
+    <string name="popup_reject">Rejeitar</string>
+
 </resources>

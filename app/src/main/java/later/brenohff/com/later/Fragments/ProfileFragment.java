@@ -89,6 +89,9 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
             case R.id.profile_fragment_my_events:
                 ((MainActivity) context).pushFragmentWithStack(new MyEventsFragment(), "MyEventsFragment");
                 break;
+            case R.id.profile_fragment_approve_event:
+                ((MainActivity) context).pushFragmentWithStack(new ApproveEventsFragment(), "ApproveEventsFragment");
+                break;
         }
     }
 
