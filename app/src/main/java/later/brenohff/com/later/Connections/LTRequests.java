@@ -57,7 +57,7 @@ public interface LTRequests {
     @POST("users/saveUser")
     Call<Void> registrarUsuario(@Body LTUser user);
 
-    @GET("users/getUser")
+    @GET("users/getUserById")
     Call<LTUser> getUserByFaceID(@Query("id") String id);
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////
