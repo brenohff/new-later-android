@@ -57,10 +57,12 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventViewH
         holder.local.setText(event.getLocale());
         holder.hora.setText(event.getDate() + " - " + event.getHour());
 
-        for (LTUser user : event.getFavorites()) {
-            if (user.getId().equals(LTMainData.getInstance().getUser().getId())) {
-                liked = true;
-                holder.coracao.setImageDrawable(context.getDrawable(R.drawable.ic_icons8_heart_outline_filled_100));
+        if (LTMainData.getInstance().getUser() != null) {
+            for (LTUser user : event.getFavorites()) {
+                if (user.getId().equals(LTMainData.getInstance().getUser().getId())) {
+                    liked = true;
+                    holder.coracao.setImageDrawable(context.getDrawable(R.drawable.ic_icons8_heart_outline_filled_100));
+                }
             }
         }
 

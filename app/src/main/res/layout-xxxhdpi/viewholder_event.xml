@@ -21,6 +21,7 @@
                 android:id="@+id/viewHolderEventBackground"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:adjustViewBounds="true"
                 android:scaleType="centerCrop" />
 
             <ImageView
@@ -34,8 +35,8 @@
             android:id="@+id/coracao"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:layout_alignParentEnd="true"
             android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
             android:padding="10dp"
             android:src="@drawable/ic_icons8_heart_outline_100" />
 
@@ -55,8 +56,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/muktamahee_light"
-                    android:paddingEnd="5dp"
                     android:paddingStart="5dp"
+                    android:paddingEnd="5dp"
                     android:textColor="#FFF"
                     android:textSize="30sp" />
             </me.grantland.widget.AutofitLayout>
