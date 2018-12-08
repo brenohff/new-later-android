@@ -10,6 +10,8 @@ public class LTEvent implements Serializable {
     private Long id;
     private LTUser users;
     private List<LTCategory> categories;
+    private List<LTUser> attendances;
+    private List<LTUser> favorites;
 
     private String title;
     private String description;
@@ -50,6 +52,22 @@ public class LTEvent implements Serializable {
 
     public void setUser(LTUser users) {
         this.users = users;
+    }
+
+    public List<LTUser> getAttendances() {
+        return attendances;
+    }
+
+    public void setAttendances(List<LTUser> attendances) {
+        this.attendances = attendances;
+    }
+
+    public List<LTUser> getFavorites() {
+        return favorites;
+    }
+
+    public void setFavorites(List<LTUser> favorites) {
+        this.favorites = favorites;
     }
 
     public String getTitle() {

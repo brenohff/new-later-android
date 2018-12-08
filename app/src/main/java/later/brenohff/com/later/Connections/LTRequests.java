@@ -7,6 +7,7 @@ import later.brenohff.com.later.Models.LTCategory;
 import later.brenohff.com.later.Models.LTChat;
 import later.brenohff.com.later.Models.LTEvent;
 import later.brenohff.com.later.Models.LTUser;
+import later.brenohff.com.later.Models.LTUserEvent;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import retrofit2.Call;
@@ -56,6 +57,27 @@ public interface LTRequests {
     Call<Void> updateEventWithImage(
             @Part("event") RequestBody event,
             @Part MultipartBody.Part file);
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////
+    ///// ATTENDANCES AND FAVORITES
+    ////////////////////////////////////////////////////////////////////////////////////////////////////
+    @GET("userEvent/getFavoritesEventsByUser")
+    Call<List<LTEvent>> getFavoritesEventsByUser(@Query("user_id") String user_id);
+
+    @POST("userEvent/saveFavoritesEvents")
+    Call<Void> saveFavoritesEvents(@Body LTUserEvent favorites);
+
+    @POST("userEvent/deleteFavoritesEvents")
+    Call<Void> deleteFavoritesEvents(@Body LTUserEvent favorites);
+
+    @GET("userEvent/getAttendancesByEvent")
+    Call<List<LTUser>> getAttendancesByEvent(@Query("event_id") Long event_id);
+
+    @POST("userEvent/saveAttendances")
+    Call<Void> saveAttendances(@Body LTUserEvent attendances);
+
+    @POST("userEvent/deleteAttendances")
+    Call<Void> deleteAttendances(@Body LTUserEvent attendances);
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////
     ///// USERS

@@ -5,11 +5,9 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -20,28 +18,34 @@ import com.squareup.picasso.Picasso;
 import java.util.List;
 
 import later.brenohff.com.later.Activities.MainActivity;
+import later.brenohff.com.later.Connections.LTConnection;
+import later.brenohff.com.later.Connections.LTRequests;
 import later.brenohff.com.later.Fragments.EventFragment;
+import later.brenohff.com.later.Memory.LTMainData;
 import later.brenohff.com.later.Models.LTEvent;
-import later.brenohff.com.later.Others.ResizeAnimation;
+import later.brenohff.com.later.Models.LTUser;
+import later.brenohff.com.later.Models.LTUserEvent;
 import later.brenohff.com.later.R;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventViewHolder> {
 
     private Context context;
     private List<LTEvent> eventList;
     private boolean liked = false;
-    private int width;
 
     public EventsAdapter(List<LTEvent> eventList) {
         this.eventList = eventList;
     }
+
 
     @NonNull
     @Override
     public EventViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.viewholder_event, parent, false);
         context = view.getContext();
-        width = ((MainActivity) context).getWidth();
         return new EventViewHolder(view);
     }
 
@@ -53,26 +57,73 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventViewH
         holder.local.setText(event.getLocale());
         holder.hora.setText(event.getDate() + " - " + event.getHour());
 
-        holder.cardview.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                EventFragment eventFragment = new EventFragment();
-                Bundle bundle = new Bundle();
-                bundle.putSerializable("event", event);
-                eventFragment.setArguments(bundle);
-                ((MainActivity) context).pushFragmentWithStack(eventFragment, "EventFragment");
+        for (LTUser user : event.getFavorites()) {
+            if (user.getId().equals(LTMainData.getInstance().getUser().getId())) {
+                liked = true;
+                holder.coracao.setImageDrawable(context.getDrawable(R.drawable.ic_icons8_heart_outline_filled_100));
             }
+        }
+
+        holder.cardview.setOnClickListener(view -> {
+            EventFragment eventFragment = new EventFragment();
+            Bundle bundle = new Bundle();
+            bundle.putSerializable("event", event);
+            eventFragment.setArguments(bundle);
+            ((MainActivity) context).pushFragmentWithStack(eventFragment, "EventFragment");
         });
 
-        holder.coracao.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        holder.coracao.setOnClickListener(view -> {
+            if (LTMainData.getInstance().getUser() != null) {
                 if (liked) {
+                    deleteFavoriteEvent(event.getId());
                     holder.coracao.setImageDrawable(context.getDrawable(R.drawable.ic_icons8_heart_outline_100));
                 } else {
+                    saveFavoriteEvent(event.getId());
                     holder.coracao.setImageDrawable(context.getDrawable(R.drawable.ic_icons8_heart_outline_filled_100));
                 }
                 liked = !liked;
+            } else {
+                Toast.makeText(context, "É necessário realizar login para inserir evento aos favoritos.", Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    private void saveFavoriteEvent(final Long event_id) {
+        LTRequests requests = LTConnection.createService(LTRequests.class);
+        Call<Void> call = requests.saveFavoritesEvents(new LTUserEvent(event_id, LTMainData.getInstance().getUser().getId()));
+        call.enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(@NonNull Call<Void> call, @NonNull Response<Void> response) {
+                if (response.isSuccessful()) {
+                    Toast.makeText(context, "Evento adicionado aos favoritos.", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(context, "Não foi possível salvar evento como favorito", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<Void> call, @NonNull Throwable t) {
+                Toast.makeText(context, "Falha ao salvar evento como favorito", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void deleteFavoriteEvent(final Long event_id) {
+        LTRequests requests = LTConnection.createService(LTRequests.class);
+        Call<Void> call = requests.deleteFavoritesEvents(new LTUserEvent(event_id, LTMainData.getInstance().getUser().getId()));
+        call.enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(@NonNull Call<Void> call, @NonNull Response<Void> response) {
+                if (response.isSuccessful()) {
+                    Toast.makeText(context, "Evento removido dos favoritos.", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(context, "Não foi possível remover evento como favorito", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<Void> call, @NonNull Throwable t) {
+                Toast.makeText(context, "Falha ao remover evento como favorito", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -82,7 +133,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventViewH
         return eventList.size();
     }
 
-    public class EventViewHolder extends RecyclerView.ViewHolder {
+    class EventViewHolder extends RecyclerView.ViewHolder {
 
         private ImageView background;
         private TextView nome, hora, local;
@@ -90,18 +141,18 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventViewH
         private ImageView coracao;
         private LinearLayout info, data;
 
-        public EventViewHolder(View itemView) {
+        EventViewHolder(View itemView) {
             super(itemView);
 
-            nome = (TextView) itemView.findViewById(R.id.nome);
-            hora = (TextView) itemView.findViewById(R.id.hora);
-            local = (TextView) itemView.findViewById(R.id.local);
-            background = (ImageView) itemView.findViewById(R.id.viewHolderEventBackground);
-            cardview = (CardView) itemView.findViewById(R.id.cardview);
-            coracao = (ImageView) itemView.findViewById(R.id.coracao);
-            info = (LinearLayout) itemView.findViewById(R.id.infor);
-            data = (LinearLayout) itemView.findViewById(R.id.data);
-            nome = (TextView) itemView.findViewById(R.id.nome);
+            nome = itemView.findViewById(R.id.nome);
+            hora = itemView.findViewById(R.id.hora);
+            local = itemView.findViewById(R.id.local);
+            background = itemView.findViewById(R.id.viewHolderEventBackground);
+            cardview = itemView.findViewById(R.id.cardview);
+            coracao = itemView.findViewById(R.id.coracao);
+            info = itemView.findViewById(R.id.infor);
+            data = itemView.findViewById(R.id.data);
+            nome = itemView.findViewById(R.id.nome);
         }
     }
 }
