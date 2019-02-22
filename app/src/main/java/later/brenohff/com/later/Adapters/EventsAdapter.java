@@ -17,6 +17,7 @@ import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
+import de.hdodenhof.circleimageview.CircleImageView;
 import later.brenohff.com.later.Activities.MainActivity;
 import later.brenohff.com.later.Connections.LTConnection;
 import later.brenohff.com.later.Connections.LTRequests;
@@ -54,8 +55,33 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventViewH
         final LTEvent event = eventList.get(position);
         Picasso.get().load(event.getImage()).into(holder.background);
         holder.nome.setText(event.getTitle());
-        holder.local.setText(event.getLocale());
         holder.hora.setText(event.getDate() + " - " + event.getHour());
+
+//        holder.local.setText(event.getLocale());
+//
+        if (holder.whoGo != null) {
+            if (event.getFavorites().isEmpty()) {
+                holder.whoGo.setVisibility(View.GONE);
+            } else {
+                Integer size = event.getFavorites().size();
+
+                if (size == 0) {
+                    holder.whoGo.setVisibility(View.GONE);
+                } else if (size == 1) {
+                    Picasso.get().load(event.getFavorites().get(0).getImage()).into(holder.profile1);
+                    holder.profile2.setVisibility(View.GONE);
+                    holder.profile3.setVisibility(View.GONE);
+                } else if (size == 2) {
+                    Picasso.get().load(event.getFavorites().get(0).getImage()).into(holder.profile1);
+                    Picasso.get().load(event.getFavorites().get(1).getImage()).into(holder.profile2);
+                    holder.profile3.setVisibility(View.GONE);
+                } else if (size >= 3) {
+                    Picasso.get().load(event.getFavorites().get(0).getImage()).into(holder.profile1);
+                    Picasso.get().load(event.getFavorites().get(1).getImage()).into(holder.profile2);
+                    Picasso.get().load(event.getFavorites().get(2).getImage()).into(holder.profile3);
+                }
+            }
+        }
 
         if (LTMainData.getInstance().getUser() != null) {
             for (LTUser user : event.getFavorites()) {
@@ -141,7 +167,9 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventViewH
         private TextView nome, hora, local;
         private CardView cardview;
         private ImageView coracao;
-        private LinearLayout info, data;
+
+        private LinearLayout whoGo;
+        private CircleImageView profile1, profile2, profile3;
 
         EventViewHolder(View itemView) {
             super(itemView);
@@ -152,9 +180,12 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventViewH
             background = itemView.findViewById(R.id.viewHolderEventBackground);
             cardview = itemView.findViewById(R.id.cardview);
             coracao = itemView.findViewById(R.id.coracao);
-            info = itemView.findViewById(R.id.infor);
-            data = itemView.findViewById(R.id.data);
             nome = itemView.findViewById(R.id.nome);
+
+            whoGo = itemView.findViewById(R.id.whoGo);
+            profile1 = itemView.findViewById(R.id.profile_image);
+            profile2 = itemView.findViewById(R.id.profile_image2);
+            profile3 = itemView.findViewById(R.id.profile_image3);
         }
     }
 }

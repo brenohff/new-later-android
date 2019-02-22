@@ -58,7 +58,7 @@ public class CategoriesFragment extends Fragment {
             public void onResponse(@NonNull Call<List<LTCategory>> call, @NonNull Response<List<LTCategory>> response) {
                 if (response.isSuccessful()) {
                     List<LTCategory> ltCategories = response.body();
-                    recyclerViewState = recyclerView.getLayoutManager().onSaveInstanceState();
+                    recyclerViewState = Objects.requireNonNull(recyclerView.getLayoutManager()).onSaveInstanceState();
                     mountRecycler(Objects.requireNonNull(ltCategories));
 
                 } else {
@@ -75,7 +75,7 @@ public class CategoriesFragment extends Fragment {
 
     private void mountRecycler(final List<LTCategory> ltCategories) {
         if (!ltCategories.isEmpty()) {
-            recyclerView.getLayoutManager().onRestoreInstanceState(recyclerViewState);
+            Objects.requireNonNull(recyclerView.getLayoutManager()).onRestoreInstanceState(recyclerViewState);
             recyclerView.setHasFixedSize(true);
             ItemClickSupport.addTo(recyclerView).setOnItemClickListener((recyclerView, position, v) ->
                     Toast.makeText(context, ltCategories.get(position).getName(), Toast.LENGTH_SHORT).show());
